@@ -1,7 +1,10 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions";
 import { formatPrice } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>;
@@ -16,23 +19,27 @@ export default async function ProductPage(props: ProductPageProps) {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">{product.name}</h1>
-            <div className="relative aspect-video mb-4">
-                {product.image && (
-                    <Image
-                        src={product.image}
-                        alt={product.name}
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        fill
-                    />
-                )}
-            </div>
-            <p className="mb-4">{product.description}</p>
-            <p className="text-xl font-semibold">
-                {formatPrice(product.price)}
-            </p>
-        </div>
+        <main className="container mx-auto p-4">
+            <Card className="max-w-3xl mx-auto">
+                <CardContent className="p-6">
+                    <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+                    <div className="flex items-center gap-2 mb-4">
+                        <span className="font-semibold text-lg">
+                            {formatPrice(product.price)}
+                        </span>
+                        <Badge variant={"outline"}>
+                            {product.category?.name}
+                        </Badge>
+                    </div>
+
+                    <Separator className="my-4"></Separator>
+
+                    <div className="space-y-2">
+                        <h2 className="font-medium">Description</h2>
+                        <p>{product.description}</p>
+                    </div>
+                </CardContent>
+            </Card>
+        </main>
     );
 }
