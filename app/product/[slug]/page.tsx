@@ -1,8 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, sleep } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 
@@ -17,6 +16,8 @@ export default async function ProductPage(props: ProductPageProps) {
     if (!product) {
         notFound();
     }
+
+    await sleep(1500);
 
     return (
         <main className="container mx-auto p-4">
