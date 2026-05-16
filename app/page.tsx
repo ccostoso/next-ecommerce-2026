@@ -1,13 +1,21 @@
-import { ProductCard } from "./ProductCard";
+import { ProductCard } from "./_components/ProductCard";
 import { prisma } from "@/lib/prisma";
 
-export default async function HomePage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function HomePage(props: { searchParams: SearchParams }) {
+    const searchParams = await props.searchParams;
+
+    const page = Number(searchParams.page) || 1;
+    const pageSize = 3;
+    const skip = (page - 1) * pageSize;
+
     const products = await prisma.product.findMany({
-        include: {
-            category: true,
-        },
+        skip,
+        take: pageSize,
     });
-    console.log(products);
+
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     return (
         <div className="container mx-auto p-4">
