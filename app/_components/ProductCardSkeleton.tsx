@@ -1,13 +1,7 @@
-import {
-    Card,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ProductCardSkeleton() {
+export default function ProductCardSkeleton() {
     return (
         <Card className="pt-0 overflow-hidden">
             <div className="relative aspect-video">

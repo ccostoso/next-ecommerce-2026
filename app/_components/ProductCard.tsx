@@ -13,7 +13,7 @@ type ProductCardProps = {
     product: Product;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Card className="pt-0 overflow-hidden">
             <div className="relative aspect-video">
