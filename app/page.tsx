@@ -25,7 +25,7 @@ async function Products({ page }: ProductsProps) {
         take: PAGE_SIZE,
     });
 
-    await sleep(1500);
+    await sleep(1000);
 
     return (
         <>

@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>;
@@ -48,7 +50,7 @@ export default async function ProductPage(props: ProductPageProps) {
         notFound();
     }
 
-    await sleep(1500);
+    await sleep(1000);
 
     return (
         <main className="container mx-auto p-4">
@@ -117,6 +119,19 @@ export default async function ProductPage(props: ProductPageProps) {
                                     </span>
                                 )}
                             </div>
+                        </div>
+
+                        <Separator className="my-4"></Separator>
+
+                        <div>
+                            <Button
+                                disabled={!product.inventory}
+                                size="lg"
+                                className="w-full"
+                            >
+                                <ShoppingCart className="mr-2" size={16} />
+                                Add to Cart
+                            </Button>
                         </div>
                     </div>
                 </CardContent>
