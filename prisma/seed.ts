@@ -36,6 +36,7 @@ async function main() {
             image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
             categoryId: electronics.id,
             slug: "wireless-headphones",
+            inventory: 10,
         },
         {
             id: "2",
@@ -46,6 +47,7 @@ async function main() {
             image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
             categoryId: electronics.id,
             slug: "smart-watch",
+            inventory: 15,
         },
         {
             id: "3",
@@ -55,6 +57,7 @@ async function main() {
             image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
             categoryId: clothing.id,
             slug: "running-shoes",
+            inventory: 20,
         },
         {
             id: "4",
@@ -64,6 +67,7 @@ async function main() {
             image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d",
             categoryId: home.id,
             slug: "ceramic-mug",
+            inventory: 30,
         },
         {
             id: "5",
@@ -73,6 +77,7 @@ async function main() {
             image: "https://images.unsplash.com/photo-1491637639811-60e2756cc1c7",
             categoryId: clothing.id,
             slug: "leather-backpack",
+            inventory: 12,
         },
     ];
 
