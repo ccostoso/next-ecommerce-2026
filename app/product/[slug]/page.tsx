@@ -54,22 +54,22 @@ export default async function ProductPage(props: ProductPageProps) {
         <main className="container mx-auto p-4">
             <Card className="max-w-3xl mx-auto">
                 <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <div className="relative rounded-lg overflow-hidden aspect-video">
-                            {product.image && (
-                                <Image
-                                    src={product.image}
-                                    alt={product.name}
-                                    sizes={
-                                        "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    }
-                                    fill
-                                    priority
-                                    className="object-cover"
-                                />
-                            )}
-                        </div>
+                    {/* <div> */}
+                    <div className="relative rounded-lg overflow-hidden aspect-video">
+                        {product.image && (
+                            <Image
+                                src={product.image}
+                                alt={product.name}
+                                sizes={
+                                    "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                }
+                                fill
+                                priority
+                                className="object-cover"
+                            />
+                        )}
                     </div>
+                    {/* </div> */}
                     <div>
                         <h1 className="text-3xl font-bold mb-2">
                             {product.name}
