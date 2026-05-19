@@ -1,13 +1,15 @@
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import {
     Sheet,
+    SheetClose,
     SheetContent,
-    SheetDescription,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
 } from "./ui/sheet";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import { categories } from "./Navbar";
 
 export default function MobileNav() {
     return (
@@ -17,13 +19,42 @@ export default function MobileNav() {
                     <Menu className="h-5 w-5" />
                 </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent side="left" className="w-full">
                 <SheetHeader>
-                    <SheetTitle>Are you absolutely sure?</SheetTitle>
-                    <SheetDescription>
-                        This action cannot be undone.
-                    </SheetDescription>
+                    <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
+                <nav className="flex flex-col gap-4 p-4">
+                    <SheetClose asChild>
+                        <Link href="/">
+                            <h3 className="text-sm font-semibold hover:text-foreground transition-colors">
+                                Home
+                            </h3>
+                        </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                        <Link href="/products">
+                            <h3 className="text-sm font-semibold hover:text-foreground transition-colors">
+                                Products
+                            </h3>
+                        </Link>
+                    </SheetClose>
+
+                    <h3 className="text-sm font-semibold">Categories</h3>
+                    <ul className="flex flex-col gap-2 pl-4">
+                        {categories.map((category) => (
+                            <li key={category.id}>
+                                <SheetClose asChild>
+                                    <Link
+                                        href={`/products?category=${category.id}`}
+                                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {category.name}
+                                    </Link>
+                                </SheetClose>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
             </SheetContent>
         </Sheet>
     );
