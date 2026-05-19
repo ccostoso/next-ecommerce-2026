@@ -89,6 +89,35 @@ export default async function ProductPage(props: ProductPageProps) {
                             <h2 className="font-medium">Description</h2>
                             <p>{product.description}</p>
                         </div>
+
+                        <Separator className="my-4"></Separator>
+
+                        <div className="space-y-2">
+                            <h2 className="font-medium">Availability</h2>
+                            <div className="flex items-center gap-2">
+                                {product.inventory ? (
+                                    <Badge
+                                        variant={"outline"}
+                                        className="text-green-600"
+                                    >
+                                        In Stock
+                                    </Badge>
+                                ) : (
+                                    <Badge
+                                        variant={"destructive"}
+                                        className="text-red-600"
+                                    >
+                                        Out of Stock
+                                    </Badge>
+                                )}
+
+                                {product.inventory && (
+                                    <span className="text-sm text-muted-foreground">
+                                        {product.inventory} left
+                                    </span>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
