@@ -9,6 +9,36 @@ type ProductPageProps = {
     params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: ProductPageProps) {
+    const { slug } = await params;
+    const product = await getProductBySlug(slug);
+
+    if (!product) {
+        return {
+            title: "Product Not Found",
+        };
+    }
+
+    return {
+        title: product.name,
+        description: product.description,
+        openGraph: {
+            title: product.name,
+            description: product.description,
+            images: product.image
+                ? [
+                      {
+                          url: product.image,
+                          alt: product.name,
+                          width: 800,
+                          height: 600,
+                      },
+                  ]
+                : undefined,
+        },
+    };
+}
+
 export default async function ProductPage(props: ProductPageProps) {
     const { slug } = await props.params;
     const product = await getProductBySlug(slug);
