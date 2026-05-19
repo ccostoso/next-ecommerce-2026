@@ -48,7 +48,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
     const totalPages = Math.ceil(total / PAGE_SIZE);
 
     return (
-        <main className="container mx-auto p-4">
+        <main className="container mx-auto p-4 flex-1">
             <h1 className="text-3xl font-bold mb-6">Home</h1>
 
             <Suspense key={page} fallback={<ProductsSkeleton />}>
