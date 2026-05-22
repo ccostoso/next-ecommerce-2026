@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: ProductPageProps) {
     }
 
     return {
-        title: product.name,
+        title: `Next Commerce - ${product.name}`,
         description: product.description,
         openGraph: {
-            title: product.name,
+            title: `Next Commerce - ${product.name}`,
             description: product.description,
             images: product.image
                 ? [
@@ -65,9 +65,8 @@ export default async function ProductPage(props: ProductPageProps) {
     return (
         <main className="container mx-auto p-4">
             <Breadcrumbs items={breadcrumbItems} />
-            <Card className="max-w-3xl mx-auto">
+            <Card>
                 <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* <div> */}
                     <div className="relative rounded-lg overflow-hidden min-h-64 md:h-full">
                         {product.image && (
                             <Image
