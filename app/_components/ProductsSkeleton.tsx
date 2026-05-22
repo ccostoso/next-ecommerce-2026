@@ -1,4 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import BreadcrumbsSkeleton from "./BreadcrumbsSkeleton";
 
