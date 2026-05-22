@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>;
@@ -50,10 +51,20 @@ export default async function ProductPage(props: ProductPageProps) {
         notFound();
     }
 
+    const breadcrumbItems = [
+        { label: "Products", href: "/" },
+        {
+            label: product.category?.name,
+            href: `/product/${product.category?.slug}`,
+        },
+        { label: product.name, href: `/product/${product.slug}`, active: true },
+    ];
+
     await sleep(1000);
 
     return (
         <main className="container mx-auto p-4">
+            <Breadcrumbs items={breadcrumbItems} />
             <Card className="max-w-3xl mx-auto">
                 <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* <div> */}
@@ -71,7 +82,6 @@ export default async function ProductPage(props: ProductPageProps) {
                             />
                         )}
                     </div>
-                    {/* </div> */}
                     <div>
                         <h1 className="text-3xl font-bold mb-2">
                             {product.name}

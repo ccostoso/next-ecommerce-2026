@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
     return (
         <main className="container mx-auto p-4">
+            <Skeleton className="h-8 w-1/4 mb-4" />
             <Card className="max-w-3xl mx-auto">
                 <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="relative rounded-lg overflow-hidden aspect-video">
