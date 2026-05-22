@@ -1,4 +1,6 @@
-import { Menu, X } from "lucide-react";
+"use client";
+
+import { Menu } from "lucide-react";
 import {
     Sheet,
     SheetClose,
@@ -9,7 +11,7 @@ import {
 } from "./ui/sheet";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { categories } from "./Navbar";
+import { categories } from "./categories";
 
 export default function MobileNav() {
     return (

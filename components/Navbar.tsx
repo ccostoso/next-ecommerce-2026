@@ -3,12 +3,7 @@ import { Button } from "./ui/button";
 import { Search, ShoppingCart } from "lucide-react";
 import { ModeToggle } from "./ThemeToggle";
 import MobileNav from "./MobileNav";
-
-export const categories = [
-    { id: 1, name: "Electronics", href: "/products?category=electronics" },
-    { id: 2, name: "Clothing", href: "/products?category=clothing" },
-    { id: 3, name: "Home", href: "/products?category=home" },
-];
+import { categories } from "./categories";
 
 export default function Navbar() {
     return (
