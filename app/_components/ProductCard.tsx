@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Link href={`/product/${product.slug}`} className="block">
             <Card
-                className="pt-0 overflow-hidden"
+                className="pt-0 overflow-hidden min-h-100"
                 onClick={async () => {
                     getProductBySlug(product.slug);
                 }}
