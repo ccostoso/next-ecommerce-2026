@@ -11,7 +11,7 @@ import {
 } from "./ui/sheet";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { categories } from "./categories";
+import { categories } from "../lib/categories";
 
 export default function MobileNav() {
     return (

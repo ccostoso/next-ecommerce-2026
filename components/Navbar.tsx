@@ -3,7 +3,8 @@ import { Button } from "./ui/button";
 import { Search, ShoppingCart } from "lucide-react";
 import { ModeToggle } from "./ThemeToggle";
 import MobileNav from "./MobileNav";
-import { categories } from "./categories";
+import { categories } from "../lib/categories";
+import SearchInput from "./SearchInput";
 
 export default function Navbar() {
     return (
@@ -31,7 +32,12 @@ export default function Navbar() {
 
                     <MobileNav />
                 </div>
-                <div className="flex items-center gap-4">
+
+                <div className="block w-full mx-4 md:mx-8">
+                    <SearchInput />
+                </div>
+
+                <div className="flex items-center gap-3 md:gap-4">
                     <Button variant="outline" size="icon" asChild>
                         <Link href="/search">
                             <Search className="h-5 w-5" />
