@@ -19,6 +19,7 @@ const PAGE_SIZE = 3;
 type ProductsProps = {
     page: number;
 };
+
 async function Products({ page }: ProductsProps) {
     const skip = (page - 1) * PAGE_SIZE;
     const products = await prisma.product.findMany({
