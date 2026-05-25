@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CategorySidebarSkeleton from "../_components/skeletons/CategorySidebarSkeleton";
+import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton";
 import CategorySidebar from "@/components/CategorySidebar";
 import { prisma } from "@/lib/prisma";
 

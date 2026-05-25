@@ -1,14 +1,14 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductCard from "../../_components/ProductCard";
+import ProductCard from "../../../components/ProductCard";
 import { sleep } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import ProductsSkeleton from "../../_components/skeletons/ProductsSkeleton";
+import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import CategorySidebar from "@/components/CategorySidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import CategorySidebarSkeleton from "@/app/_components/skeletons/CategorySidebarSkeleton";
+import CategorySidebarSkeleton from "@/components/skeletons/CategorySidebarSkeleton";
 
 type CategoryPageProps = {
     params: Promise<{ slug: string }>;

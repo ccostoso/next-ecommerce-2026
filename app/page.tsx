@@ -6,10 +6,10 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import ProductCard from "./_components/ProductCard";
+import ProductCard from "../components/ProductCard";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import ProductsSkeleton from "./_components/skeletons/ProductsSkeleton";
+import ProductsSkeleton from "../components/skeletons/ProductsSkeleton";
 import { sleep } from "@/lib/utils";
 import Breadcrumbs from "@/components/Breadcrumbs";
 

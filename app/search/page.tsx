@@ -1,9 +1,9 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductCard from "../_components/ProductCard";
+import ProductCard from "../../components/ProductCard";
 import { sleep } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import ProductsSkeleton from "../_components/skeletons/ProductsSkeleton";
+import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton";
 
 type SearchPageProps = {
     searchParams: Promise<{

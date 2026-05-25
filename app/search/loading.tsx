@@ -1,6 +1,6 @@
-import BreadcrumbsSkeleton from "../_components/skeletons/BreadcrumbsSkeleton";
-import CategorySidebarSkeleton from "../_components/skeletons/CategorySidebarSkeleton";
-import ProductsSkeleton from "../_components/skeletons/ProductsSkeleton";
+import BreadcrumbsSkeleton from "../../components/skeletons/BreadcrumbsSkeleton";
+import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton";
+import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {

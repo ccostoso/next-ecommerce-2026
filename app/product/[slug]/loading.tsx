@@ -1,4 +1,4 @@
-import BreadcrumbsSkeleton from "@/app/_components/skeletons/BreadcrumbsSkeleton";
+import BreadcrumbsSkeleton from "@/components/skeletons/BreadcrumbsSkeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";

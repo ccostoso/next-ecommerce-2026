@@ -1,5 +1,5 @@
-import BreadcrumbsSkeleton from "./_components/skeletons/BreadcrumbsSkeleton";
-import ProductsSkeleton from "./_components/skeletons/ProductsSkeleton";
+import BreadcrumbsSkeleton from "../components/skeletons/BreadcrumbsSkeleton";
+import ProductsSkeleton from "../components/skeletons/ProductsSkeleton";
 
 export default function Loading() {
     return (
