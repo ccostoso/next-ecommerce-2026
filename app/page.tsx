@@ -51,8 +51,8 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 
     return (
         <main className="container mx-auto p-4 flex-1">
+            <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
             <Suspense key={page} fallback={<ProductsSkeleton />}>
-                <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
                 <Products page={page} />
             </Suspense>
 
