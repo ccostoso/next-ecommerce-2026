@@ -1,5 +1,5 @@
 export const categories = [
-    { id: 1, name: "Electronics", href: "/products?category=electronics" },
-    { id: 2, name: "Clothing", href: "/products?category=clothing" },
-    { id: 3, name: "Home", href: "/products?category=home" },
+    { id: 1, name: "Electronics", href: "/search/electronics" },
+    { id: 2, name: "Clothing", href: "/search/clothing" },
+    { id: 3, name: "Home", href: "/search/home" },
 ];
