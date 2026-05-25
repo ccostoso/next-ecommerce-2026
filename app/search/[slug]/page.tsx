@@ -3,9 +3,12 @@ import ProductCard from "../../_components/ProductCard";
 import { sleep } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import ProductsSkeleton from "../../_components/ProductsSkeleton";
+import ProductsSkeleton from "../../_components/skeletons/ProductsSkeleton";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import CategorySidebar from "@/components/CategorySidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import CategorySidebarSkeleton from "@/app/_components/skeletons/CategorySidebarSkeleton";
 
 type CategoryPageProps = {
     params: Promise<{ slug: string }>;
@@ -93,7 +96,7 @@ export default async function CategoryPage({
         <div className="container mx-auto p-4">
             <Breadcrumbs items={breadcrumbItems} />
 
-            <div className="flex gap-3 text-sm mb-8">
+            {/* <div className="flex gap-3 text-sm mb-8">
                 <span>Sort by:</span>
                 <Link
                     href={`/search/${slug}?sort=price_asc`}
@@ -115,10 +118,22 @@ export default async function CategoryPage({
                 >
                     Price (High to Low)
                 </Link>
+            </div> */}
+            <div className="flex gap-4">
+                <div className="flex-none">
+                    <Suspense fallback={<CategorySidebarSkeleton />}>
+                        <CategorySidebar activeCategory={slug} />
+                    </Suspense>
+                </div>
+                <div className="flex-1">
+                    <Suspense
+                        key={`${slug}-${sort}`}
+                        fallback={<ProductsSkeleton />}
+                    >
+                        <Products slug={slug || ""} sort={sort || undefined} />
+                    </Suspense>
+                </div>
             </div>
-            <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
-                <Products slug={slug || ""} sort={sort || undefined} />
-            </Suspense>
         </div>
     );
 }

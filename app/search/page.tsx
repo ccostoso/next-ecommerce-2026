@@ -60,8 +60,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
     return (
         <div className="container mx-auto p-4">
+            <Breadcrumbs items={breadcrumbItems} />
             <Suspense key={q} fallback={<ProductsSkeleton />}>
-                <Breadcrumbs items={breadcrumbItems} />
                 <Products query={q || ""} />
             </Suspense>
         </div>
