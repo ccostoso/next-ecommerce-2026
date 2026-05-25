@@ -3,7 +3,7 @@ import ProductCard from "../_components/ProductCard";
 import { sleep } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
-import ProductsSkeleton from "../_components/ProductsSkeleton";
+import ProductsSkeleton from "../_components/skeletons/ProductsSkeleton";
 
 type SearchPageProps = {
     searchParams: Promise<{
@@ -59,11 +59,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     ];
 
     return (
-        <div className="container mx-auto p-4">
+        <>
             <Breadcrumbs items={breadcrumbItems} />
             <Suspense key={q} fallback={<ProductsSkeleton />}>
                 <Products query={q || ""} />
             </Suspense>
-        </div>
+        </>
     );
 }

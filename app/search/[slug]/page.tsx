@@ -93,10 +93,10 @@ export default async function CategoryPage({
     ];
 
     return (
-        <div className="container mx-auto p-4">
+        <>
             <Breadcrumbs items={breadcrumbItems} />
 
-            {/* <div className="flex gap-3 text-sm mb-8">
+            <div className="flex gap-3 text-sm mb-8">
                 <span>Sort by:</span>
                 <Link
                     href={`/search/${slug}?sort=price_asc`}
@@ -118,22 +118,11 @@ export default async function CategoryPage({
                 >
                     Price (High to Low)
                 </Link>
-            </div> */}
-            <div className="flex gap-4">
-                <div className="flex-none">
-                    <Suspense fallback={<CategorySidebarSkeleton />}>
-                        <CategorySidebar activeCategory={slug} />
-                    </Suspense>
-                </div>
-                <div className="flex-1">
-                    <Suspense
-                        key={`${slug}-${sort}`}
-                        fallback={<ProductsSkeleton />}
-                    >
-                        <Products slug={slug || ""} sort={sort || undefined} />
-                    </Suspense>
-                </div>
             </div>
-        </div>
+
+            <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
+                <Products slug={slug || ""} sort={sort || undefined} />
+            </Suspense>
+        </>
     );
 }
