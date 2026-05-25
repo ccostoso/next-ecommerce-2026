@@ -1,19 +1,17 @@
 import ProductsSkeleton from "../../_components/skeletons/ProductsSkeleton";
 import BreadcrumbsSkeleton from "@/app/_components/skeletons/BreadcrumbsSkeleton";
-import CategorySidebarSkeleton from "@/app/_components/skeletons/CategorySidebarSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
     return (
-        <div className="container mx-auto p-4">
+        <>
             <BreadcrumbsSkeleton />
-            <div className="flex gap-4">
-                <div className="flex-none">
-                    <CategorySidebarSkeleton />
-                </div>
-                <div className="flex-1">
-                    <ProductsSkeleton />
-                </div>
+            <div className="flex gap-3 text-sm mb-8">
+                <Skeleton className="h-4 w-14" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-34" />
             </div>
-        </div>
+            <ProductsSkeleton />
+        </>
     );
 }
