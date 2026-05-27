@@ -21,7 +21,7 @@ export async function getProductBySlug(slug: string) {
     return product;
 }
 
-type getProductsParams = {
+export type getProductsParams = {
     query?: string;
     slug?: string;
     sort?: string;
