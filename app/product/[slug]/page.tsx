@@ -64,8 +64,8 @@ export default async function ProductPage(props: ProductPageProps) {
         <main className="container mx-auto p-4">
             <Breadcrumbs items={breadcrumbItems} />
             <Card>
-                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="relative rounded-lg overflow-hidden min-h-64 md:h-full">
+                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="relative rounded-lg overflow-hidden min-h-64 md:h-full md:col-span-5">
                         {product.image && (
                             <Image
                                 src={product.image}
@@ -79,7 +79,7 @@ export default async function ProductPage(props: ProductPageProps) {
                             />
                         )}
                     </div>
-                    <div>
+                    <div className="md:col-span-7">
                         <h1 className="text-3xl font-bold mb-2">
                             {product.name}
                         </h1>
