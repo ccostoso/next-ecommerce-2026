@@ -39,6 +39,17 @@ export default function SortingControls() {
                 <ul>
                     <li>
                         <Link
+                            href={createSortURL(null)} // Pass null to indicate no sorting
+                            className={cn({
+                                "font-semibold underline": !currentSort,
+                                "text-muted-foreground": !!currentSort,
+                            })}
+                        >
+                            Relevance
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
                             href={createSortURL("price_asc")}
                             className={cn({
                                 "font-semibold underline":
