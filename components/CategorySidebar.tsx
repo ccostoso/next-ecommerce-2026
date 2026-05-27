@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Layers } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -19,7 +20,10 @@ export default function CategorySidebar({
 
     return (
         <div className="w-full p-4 h-full">
-            <h3 className="text-sm text-muted-foreground mb-2">Collections</h3>
+            <h3 className="text-sm text-muted-foreground mb-2">
+                <Layers className="inline-block mr-2" />
+                Collections
+            </h3>
             <div className="flex flex-col gap-2">
                 <ul>
                     {categories.map((category) => (
@@ -28,8 +32,10 @@ export default function CategorySidebar({
                                 href={`/search/${category.slug}`}
                                 className={cn(
                                     "text-sm",
-                                    activeCategory === category.slug &&
-                                        "underline underline-offset-4 font-medium",
+                                    {
+                                        "underline underline-offset-4 font-medium":
+                                            activeCategory === category.slug,
+                                    },
                                     "hover:text-primary",
                                 )}
                             >

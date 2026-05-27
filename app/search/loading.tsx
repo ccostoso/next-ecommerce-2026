@@ -12,11 +12,6 @@ export default function Loading() {
                 </div>
                 <div className="flex-1">
                     <BreadcrumbsSkeleton />
-                    <div className="flex gap-3 text-sm mb-8">
-                        <Skeleton className="h-4 w-14" />
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-34" />
-                    </div>
                     <ProductsSkeleton />
                 </div>
                 <div className="flex-none w-48">

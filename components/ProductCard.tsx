@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Link href={`/product/${product.slug}`} className="block">
             <Card
-                className="pt-0 overflow-hidden min-h-100"
+                className="pt-0 overflow-hidden"
                 onClick={async () => {
                     getProductBySlug(product.slug);
                 }}
@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
                 <CardHeader className="flex-1">
                     <CardTitle>{product.name}</CardTitle>
-                    <CardDescription className="min-h-14 line-clamp-2">
+                    <CardDescription className="min-h-10 line-clamp-2">
                         {product.description}
                     </CardDescription>
                 </CardHeader>
