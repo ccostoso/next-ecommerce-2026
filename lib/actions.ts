@@ -79,3 +79,23 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
 
     return products;
 }
+
+// Prisma.CartGetPayload is a utility type that generates the TypeScript 
+// type for the result of a Prisma query on the Cart model, including 
+// the specified relations and fields.
+// Ensures that the CartWithProducts type includes the related items and 
+// their associated products when fetching a cart from the database.
+export type CartWithProducts = Prisma.CartGetPayload<{
+    include: {
+        items: {
+            include: {
+                product: true;
+            };
+        };
+    };
+}>;
+
+export type ShoppingCart = CartWithProducts & {
+    size: number;
+    subtotal: number;
+};
