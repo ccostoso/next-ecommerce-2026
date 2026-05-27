@@ -3,16 +3,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductCardSkeleton() {
     return (
-        <Card className="pt-0 overflow-hidden min-h-100">
+        <Card className="pt-0 overflow-hidden">
             <div className="relative aspect-video">
                 <Skeleton className="w-full h-full"></Skeleton>
             </div>
-            <CardHeader>
+            <CardHeader className="flex-1">
                 <Skeleton className="w-1/3 h-3"></Skeleton>
-                <Skeleton className="w-full h-6 mt-1"></Skeleton>
+                <Skeleton className="w-full h-14 mt-1"></Skeleton>
             </CardHeader>
 
-            <CardFooter>
+            <CardFooter className="mt-auto">
                 <Skeleton className="w-full h-4"></Skeleton>
             </CardFooter>
         </Card>
