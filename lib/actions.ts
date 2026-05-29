@@ -84,9 +84,9 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
 // Prisma.CartGetPayload is a utility type that generates the TypeScript 
 // type for the result of a Prisma query on the Cart model, including 
 // the specified relations and fields.
-// Ensures that the CartWithProducts type includes the related items and 
+// Ensures that the ProductCart type includes the related items and 
 // their associated products when fetching a cart from the database.
-export type CartWithProducts = Prisma.CartGetPayload<{
+export type ProductCart = Prisma.CartGetPayload<{
     include: {
         items: {
             include: {
@@ -96,12 +96,12 @@ export type CartWithProducts = Prisma.CartGetPayload<{
     };
 }>;
 
-export type ShoppingCart = CartWithProducts & {
+export type CheckoutCart = ProductCart & {
     size: number;
     subtotal: number;
 };
 
-export async function getCartById(): Promise<ShoppingCart | null> {
+async function getCartFromCookie(): Promise<ProductCart | null> {
     const id = (await (cookies())).get("cartId")?.value;
 
     if (!id) return null;
@@ -117,6 +117,44 @@ export async function getCartById(): Promise<ShoppingCart | null> {
         },
     });
 
+    return cart;
+}
+
+export async function getOrCreateCartWithProducts(): Promise<ProductCart> {
+    let cart = await getCartFromCookie();
+
+    if (cart) return cart;
+
+    cart = await prisma.cart.create({
+        // The `data` property is required when creating a new record with Prisma, even if there are no fields to set.
+        data: {},
+
+        // The `include` property specifies related records to fetch along with the main record. 
+        // In this case, it includes the items in the cart and their associated products.
+        include: {
+            items: {
+                include: {
+                    product: true,
+                },
+            },
+        },
+    });
+
+    // Set a cookie named "cartId" with the value of the newly created cart's ID.
+    (await cookies()).set({
+        name: "cartId",
+        value: cart.id,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+    });
+
+    return cart;
+}
+
+export async function getCheckoutCart(): Promise<CheckoutCart | null> {
+    const cart = await getCartFromCookie();
+
     if (!cart) return null;
 
     // Calculate the total quantity of items in the cart by summing the quantity of each item.
@@ -131,3 +169,4 @@ export async function getCartById(): Promise<ShoppingCart | null> {
         subtotal,
     };
 }
+
