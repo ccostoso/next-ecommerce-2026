@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 import { Prisma } from "@/generated/prisma/client";
 
@@ -99,3 +100,34 @@ export type ShoppingCart = CartWithProducts & {
     size: number;
     subtotal: number;
 };
+
+export async function getCartById(): Promise<ShoppingCart | null> {
+    const id = (await (cookies())).get("cartId")?.value;
+
+    if (!id) return null;
+
+    const cart = await prisma.cart.findUnique({
+        where: { id },
+        include: {
+            items: {
+                include: {
+                    product: true,
+                },
+            },
+        },
+    });
+
+    if (!cart) return null;
+
+    // Calculate the total quantity of items in the cart by summing the quantity of each item.
+    const size = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+    // Calculate the subtotal by summing the product of quantity and price for each item in the cart.
+    const subtotal = cart.items.reduce((total, item) => total + item.quantity * item.product.price, 0);
+
+    return {
+        ...cart,
+        size,
+        subtotal,
+    };
+}
