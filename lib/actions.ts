@@ -101,6 +101,9 @@ export type CheckoutCart = ProductCart & {
     subtotal: number;
 };
 
+// Helper function to retrieve the cart from the cookie. It checks for the presence of a "cartId" cookie, 
+// and if it exists, it fetches the corresponding cart from the database, including its items 
+// and associated products. If the cookie is not present or the cart cannot be found, it returns null.
 async function getCartFromCookie(): Promise<ProductCart | null> {
     const id = (await (cookies())).get("cartId")?.value;
 
@@ -120,7 +123,10 @@ async function getCartFromCookie(): Promise<ProductCart | null> {
     return cart;
 }
 
-export async function getOrCreateCartWithProducts(): Promise<ProductCart> {
+// This function retrieves the existing cart from the cookie or creates a new one if it doesn't exist. 
+// If a new cart is created, it sets a cookie with the cart's ID for future reference. 
+// The function returns the cart, including its items and associated products.
+export async function getOrCreateProductCart(): Promise<ProductCart> {
     let cart = await getCartFromCookie();
 
     if (cart) return cart;
@@ -152,6 +158,10 @@ export async function getOrCreateCartWithProducts(): Promise<ProductCart> {
     return cart;
 }
 
+// This function retrieves the current cart from the cookie and calculates additional properties 
+// such as the total quantity of items (size) and the subtotal price of the cart. If no cart is found, 
+// it returns null. The returned object includes all properties of the cart along with the calculated 
+// size and subtotal.
 export async function getCheckoutCart(): Promise<CheckoutCart | null> {
     const cart = await getCartFromCookie();
 
@@ -170,3 +180,27 @@ export async function getCheckoutCart(): Promise<CheckoutCart | null> {
     };
 }
 
+export async function addToCart(productId: string, quantity: number = 1) {
+    if (quantity < 1) throw new Error("Quantity must be at least 1");
+
+    const cart = await getOrCreateProductCart();
+
+    const existingItem = cart.items.find((item) => item.productId === productId);
+
+    if (existingItem) {
+        await prisma.cartItem.update({
+            where: { id: existingItem.id },
+            data: { quantity: existingItem.quantity + quantity },
+        });
+    } else {
+        await prisma.cartItem.create({
+            data: {
+                cartId: cart.id,
+                productId,
+                quantity,
+            },
+        });
+    }
+
+    // Revalidate pages
+}
