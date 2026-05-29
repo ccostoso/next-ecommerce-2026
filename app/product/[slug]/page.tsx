@@ -5,9 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>;
@@ -64,8 +63,8 @@ export default async function ProductPage(props: ProductPageProps) {
         <main className="container mx-auto p-4">
             <Breadcrumbs items={breadcrumbItems} />
             <Card>
-                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="relative rounded-lg overflow-hidden min-h-64 md:h-full">
+                <CardContent className="p-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="relative rounded-lg overflow-hidden min-h-64 md:h-full md:col-span-5">
                         {product.image && (
                             <Image
                                 src={product.image}
@@ -79,7 +78,7 @@ export default async function ProductPage(props: ProductPageProps) {
                             />
                         )}
                     </div>
-                    <div>
+                    <div className="md:col-span-7">
                         <h1 className="text-3xl font-bold mb-2">
                             {product.name}
                         </h1>
@@ -131,14 +130,7 @@ export default async function ProductPage(props: ProductPageProps) {
                         <Separator className="my-4"></Separator>
 
                         <div>
-                            <Button
-                                disabled={!product.inventory}
-                                size="lg"
-                                className="w-full"
-                            >
-                                <ShoppingCart className="mr-2" size={16} />
-                                Add to Cart
-                            </Button>
+                            <AddToCartButton product={product} />
                         </div>
                     </div>
                 </CardContent>
