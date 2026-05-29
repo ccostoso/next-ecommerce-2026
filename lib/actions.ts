@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 import { Prisma } from "@/generated/prisma/client";
+import { unstable_cache, updateTag } from "next/cache";
 
 // Utility function to ensure that a value is a positive integer, otherwise return a fallback value.
 function toPositiveInt(value: number | undefined, fallback: number) {
@@ -101,33 +102,36 @@ export type CheckoutCart = ProductCart & {
     subtotal: number;
 };
 
-// Helper function to retrieve the cart from the cookie. It checks for the presence of a "cartId" cookie, 
-// and if it exists, it fetches the corresponding cart from the database, including its items 
-// and associated products. If the cookie is not present or the cart cannot be found, it returns null.
-async function getCartFromCookie(): Promise<ProductCart | null> {
+// This function retrieves the cart associated with the cart ID stored in the cookies.
+// It uses `unstable_cache` to cache the result of fetching the cart from the database based on the cart ID,
+// which can improve performance by avoiding redundant database queries for the same cart ID.
+async function getCartFromCookies(): Promise<ProductCart | null> {
     const id = (await (cookies())).get("cartId")?.value;
 
     if (!id) return null;
 
-    const cart = await prisma.cart.findUnique({
-        where: { id },
-        include: {
-            items: {
-                include: {
-                    product: true,
+    // Use `unstable_cache` to cache the result of fetching the cart from the database based on the cart ID. 
+    // The cache key is generated using the cart ID, and the cache is tagged with the same key for invalidation 
+    // purposes.
+    return unstable_cache(async (id: string) => {
+        return await prisma.cart.findUnique({
+            where: { id },
+            include: {
+                items: {
+                    include: {
+                        product: true,
+                    },
                 },
             },
-        },
-    });
-
-    return cart;
+        });
+    }, [`cart-${id}`], { tags: [`cart-${id}`] })(id);
 }
 
 // This function retrieves the existing cart from the cookie or creates a new one if it doesn't exist. 
 // If a new cart is created, it sets a cookie with the cart's ID for future reference. 
 // The function returns the cart, including its items and associated products.
 export async function getOrCreateProductCart(): Promise<ProductCart> {
-    let cart = await getCartFromCookie();
+    let cart = await getCartFromCookies();
 
     if (cart) return cart;
 
@@ -163,7 +167,7 @@ export async function getOrCreateProductCart(): Promise<ProductCart> {
 // it returns null. The returned object includes all properties of the cart along with the calculated 
 // size and subtotal.
 export async function getCheckoutCart(): Promise<CheckoutCart | null> {
-    const cart = await getCartFromCookie();
+    const cart = await getCartFromCookies();
 
     if (!cart) return null;
 
@@ -203,4 +207,5 @@ export async function addToCart(productId: string, quantity: number = 1) {
     }
 
     // Revalidate pages
+    updateTag(`cart-${cart.id}`);
 }
