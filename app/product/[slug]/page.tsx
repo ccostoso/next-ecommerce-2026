@@ -5,9 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>;
@@ -131,14 +130,7 @@ export default async function ProductPage(props: ProductPageProps) {
                         <Separator className="my-4"></Separator>
 
                         <div>
-                            <Button
-                                disabled={!product.inventory}
-                                size="lg"
-                                className="w-full"
-                            >
-                                <ShoppingCart className="mr-2" size={16} />
-                                Add to Cart
-                            </Button>
+                            <AddToCartButton product={product} />
                         </div>
                     </div>
                 </CardContent>
