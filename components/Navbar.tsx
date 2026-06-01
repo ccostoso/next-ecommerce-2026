@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search } from "lucide-react";
 import { ModeToggle } from "./ThemeToggle";
 import MobileNav from "./MobileNav";
 import { categories } from "../lib/categories";

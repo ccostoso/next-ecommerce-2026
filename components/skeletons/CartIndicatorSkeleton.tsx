@@ -6,7 +6,7 @@ export default function CartIndicatorSkeleton() {
     return (
         <Button
             variant="outline"
-            className="relative opacity-50"
+            className="relative animate-pulse"
             size="icon"
             asChild
         >
