@@ -8,16 +8,17 @@ datasource db {
 }
 
 model Product {
-    id          String     @id @default(uuid())
+    id          String      @id @default(uuid())
     name        String
     description String?
     price       Float
     image       String?
-    slug        String     @unique
+    slug        String      @unique
     categoryId  String
-    inventory   Int        @default(0)
-    category    Category   @relation(fields: [categoryId], references: [id])
+    inventory   Int         @default(0)
+    category    Category    @relation(fields: [categoryId], references: [id])
     cartItems   CartItem[]
+    orderItems  OrderItem[]
 }
 
 model Category {
@@ -46,5 +47,31 @@ model CartItem {
 
     @@unique([cartId, productId])
     @@index([cartId])
+    @@index([productId])
+}
+
+model Order {
+    id                    String      @id @default(uuid())
+    total                 Float
+    status                String      @default("pending")
+    stripeSessionId       String?
+    stripePaymentIntentId String?
+    createdAt             DateTime    @default(now())
+    updatedAt             DateTime    @updatedAt
+    orderItems            OrderItem[]
+}
+
+model OrderItem {
+    id        String   @id @default(uuid())
+    orderId   String
+    productId String
+    quantity  Int      @default(1)
+    order     Order    @relation(fields: [orderId], references: [id])
+    product   Product  @relation(fields: [productId], references: [id])
+    price     Float
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([orderId])
     @@index([productId])
 }
