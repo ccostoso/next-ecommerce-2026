@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { getProductBySlug } from "@/lib/actions";
+import { getProductBySlug } from "@/lib/actions/product-actions";
 import { formatPrice, sleep } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";

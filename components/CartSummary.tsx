@@ -1,4 +1,4 @@
-import { getCheckoutCart } from "@/lib/actions";
+import { getCheckoutCart } from "@/lib/actions/cart-actions";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -17,7 +17,7 @@ export default async function CartSummary() {
     const totalPrice = subtotal + taxes + shipping;
 
     return (
-        <div className="flex flex-col p-4 border rounded-md">
+        <div className="flex flex-col p-4 mt-4 border rounded-md">
             <div className="text-sm text-muted-foreground">
                 <div className="flex items-center justify-between border-b pb-1 mb-3">
                     <p>Subtotal</p>
