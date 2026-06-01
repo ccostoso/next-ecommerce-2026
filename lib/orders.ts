@@ -13,6 +13,8 @@ export async function processCheckout() {
         throw new Error("Cart is empty");
     }
 
+    let orderId: string | null = null;
+
     try {
         const order = await prisma.$transaction(async (tx) => {
             const total = cart.subtotal;
@@ -48,8 +50,9 @@ export async function processCheckout() {
             return newOrder;
         });
 
-        // 1. Reload full order
+        orderId = order.id.toString();
 
+        // 1. Reload created order
         const createdOrder = await prisma.order.findUnique({
             where: { id: order.id },
             include: {
@@ -87,18 +90,13 @@ export async function processCheckout() {
 
         return createdOrder;
     } catch (error) {
+        if (orderId && error instanceof Error && error.message.includes("Stripe")) {
+            await prisma.order.update({
+                where: { id: orderId },
+                data: { status: "failed" },
+            });
+        }
         console.error("Error creating order:", error);
         throw new Error("Failed to create order");
     }
-
-    /*
-    TODO:
-    1. Calculate total price
-    2. Create order in the database
-    3. Create order items in the database
-    4. Clear the cart
-    5. Revalidate cache
-    6. Return order details
-
-    */
 }
