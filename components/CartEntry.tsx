@@ -30,8 +30,10 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
     };
 
     return (
-        <li className="border-b border-muted flex py-4 justify-between">
+        <div className="border-b border-muted last:border-b-0 flex py-4 justify-between">
+            {/* Left side: Product image and name with remove button */}
             <div className="flex space-x-4">
+                {/* Remove button in the top-left corner of the product image */}
                 <div className="absolute z-10 -ml-1 -mt-2">
                     <Button
                         variant="ghost"
@@ -46,6 +48,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                     </Button>
                 </div>
 
+                {/* Product image and name */}
                 <div className="overflow-hidden rounded-md border border-muted w-20 h-20">
                     {cartItem.product.image && (
                         <Image
@@ -62,6 +65,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                 </div>
             </div>
 
+            {/* Right side: Price and quantity controls */}
             <div className="flex flex-col justify-between items-end gap-2">
                 <p className="font-medium">
                     Price: {formatPrice(cartItem.product.price)}
@@ -88,6 +92,6 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                     </Button>
                 </div>
             </div>
-        </li>
+        </div>
     );
 }
