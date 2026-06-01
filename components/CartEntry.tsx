@@ -1,14 +1,34 @@
+"use client";
+
 import { CartItemWithProduct } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
+import { setCartItemQuantity } from "@/lib/actions";
 
 type CartEntryProps = {
     cartItem: CartItemWithProduct;
 };
 
 export default function CartEntry({ cartItem }: CartEntryProps) {
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const handleQuantityChange = async (delta: number) => {
+        setIsUpdating(true);
+        try {
+            await setCartItemQuantity(
+                cartItem.product.id,
+                cartItem.quantity + delta,
+            );
+        } catch (error) {
+            console.error("Failed to update cart item quantity:", error);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     return (
         <li className="border-b border-muted flex py-4 justify-between">
             <div className="flex space-x-4">
@@ -32,12 +52,13 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                 <p className="font-medium">
                     Price: {formatPrice(cartItem.product.price)}
                 </p>
-                {/* <p className="font-medium">Quantity: {cartItem.quantity}</p> */}
                 <div className="flex items-center border border-muted rounded-full">
                     <Button
                         variant="ghost"
                         size="icon"
                         className="rounded-l-full"
+                        onClick={() => handleQuantityChange(-1)}
+                        disabled={isUpdating}
                     >
                         <Minus size={16} />
                     </Button>
@@ -46,6 +67,8 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                         variant="ghost"
                         size="icon"
                         className="rounded-r-full"
+                        onClick={() => handleQuantityChange(1)}
+                        disabled={isUpdating}
                     >
                         <Plus size={16} />
                     </Button>
