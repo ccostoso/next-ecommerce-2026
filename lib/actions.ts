@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { unstable_cache, updateTag } from "next/cache";
+import { CheckoutCart, ProductCart } from "./types";
 
 // Utility function to ensure that a value is a positive integer, otherwise return a fallback value.
 function toPositiveInt(value: number | undefined, fallback: number) {
@@ -82,25 +83,9 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
     return products;
 }
 
-// Prisma.CartGetPayload is a utility type that generates the TypeScript 
-// type for the result of a Prisma query on the Cart model, including 
-// the specified relations and fields.
-// Ensures that the ProductCart type includes the related items and 
-// their associated products when fetching a cart from the database.
-export type ProductCart = Prisma.CartGetPayload<{
-    include: {
-        items: {
-            include: {
-                product: true;
-            };
-        };
-    };
-}>;
 
-export type CheckoutCart = ProductCart & {
-    size: number;
-    subtotal: number;
-};
+
+
 
 // This function retrieves the cart associated with the cart ID stored in the cookies.
 // It uses `unstable_cache` to cache the result of fetching the cart from the database based on the cart ID,
