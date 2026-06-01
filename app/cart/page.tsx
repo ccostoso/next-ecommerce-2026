@@ -19,27 +19,6 @@ export default async function CartPage() {
             ) : (
                 <div className="flex flex-col">
                     {cart?.items.map((item) => (
-                        // <div
-                        //     key={item.id}
-                        //     className="flex items-center justify-between py-4 border-b"
-                        // >
-                        //     <div>
-                        //         <h2 className="text-xl font-semibold">
-                        //             {item.product.name}
-                        //         </h2>
-                        //         <p className="text-muted-foreground">
-                        //             {item.product.description}
-                        //         </p>
-                        //     </div>
-                        //     <div>
-                        //         <p className="text-muted-foreground">
-                        //             Quantity: {item.quantity}
-                        //         </p>
-                        //         <p className="text-muted-foreground">
-                        //             Price: {formatPrice(item.product.price)}
-                        //         </p>
-                        //     </div>
-                        // </div>
                         <CartEntry key={item.id} cartItem={item} />
                     ))}
                 </div>

@@ -90,7 +90,7 @@ export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }:
 // This function retrieves the cart associated with the cart ID stored in the cookies.
 // It uses `unstable_cache` to cache the result of fetching the cart from the database based on the cart ID,
 // which can improve performance by avoiding redundant database queries for the same cart ID.
-async function getCartFromCookies(): Promise<ProductCart | null> {
+async function getProductCartFromCookies(): Promise<ProductCart | null> {
     const id = (await (cookies())).get("cartId")?.value;
 
     if (!id) return null;
@@ -116,7 +116,7 @@ async function getCartFromCookies(): Promise<ProductCart | null> {
 // If a new cart is created, it sets a cookie with the cart's ID for future reference. 
 // The function returns the cart, including its items and associated products.
 export async function getOrCreateProductCart(): Promise<ProductCart> {
-    let cart = await getCartFromCookies();
+    let cart = await getProductCartFromCookies();
 
     if (cart) return cart;
 
@@ -152,7 +152,7 @@ export async function getOrCreateProductCart(): Promise<ProductCart> {
 // it returns null. The returned object includes all properties of the cart along with the calculated 
 // size and subtotal.
 export async function getCheckoutCart(): Promise<CheckoutCart | null> {
-    const cart = await getCartFromCookies();
+    const cart = await getProductCartFromCookies();
 
     if (!cart) return null;
 
@@ -193,4 +193,36 @@ export async function addToCart(productId: string, quantity: number = 1) {
 
     // Revalidate pages
     updateTag(`cart-${cart.id}`);
+}
+
+export async function setCartItemQuantity(productId: string, quantity: number) {
+    if (quantity < 0) throw new Error("Quantity cannot be negative");
+
+    const cart = await getProductCartFromCookies();
+
+    if (!cart) throw new Error("Cart not found");
+
+    const cartItem = cart.items.find((item) => item.productId === productId);
+
+    if (!cartItem) throw new Error("Product not found in cart");
+
+    try {
+        if (quantity === 0) {
+
+            await prisma.cartItem.delete({
+                where: { id: cartItem.id },
+            });
+            // Revalidate pages
+            updateTag(`cart-${cart.id}`);
+        } else {
+            await prisma.cartItem.update({
+                where: { id: cartItem.id },
+                data: { quantity },
+            });
+        }
+    } catch (error) {
+        console.error("Error updating cart item quantity:", error);
+        throw new Error("Failed to update cart item quantity");
+    }
+
 }
