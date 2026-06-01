@@ -1,4 +1,4 @@
-import { getCheckoutCart } from "@/lib/actions";
+import { getCheckoutCart } from "@/lib/actions/cart-actions";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";

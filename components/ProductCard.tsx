@@ -8,7 +8,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Product } from "@/generated/prisma/client";
-import { getProductBySlug } from "@/lib/actions";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,12 +19,7 @@ type ProductCardProps = {
 export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Link href={`/product/${product.slug}`} className="block">
-            <Card
-                className="pt-0 overflow-hidden"
-                onClick={async () => {
-                    getProductBySlug(product.slug);
-                }}
-            >
+            <Card className="pt-0 overflow-hidden">
                 <div className="relative aspect-video">
                     {product.image && (
                         <Image

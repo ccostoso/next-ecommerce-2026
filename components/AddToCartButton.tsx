@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Product } from "@/generated/prisma/client";
-import { addToCart } from "@/lib/actions";
+import { addToCart } from "@/lib/actions/cart-actions";
 import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
 

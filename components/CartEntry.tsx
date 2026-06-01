@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import { Minus, Plus, X } from "lucide-react";
 import { useState } from "react";
-import { setCartItemQuantity } from "@/lib/actions";
+import { setCartItemQuantity } from "@/lib/actions/cart-actions";
 
 type CartEntryProps = {
     cartItem: CartItemWithProduct;

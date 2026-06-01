@@ -1,6 +1,6 @@
 import CartEntry from "@/components/CartEntry";
 import CartSummary from "@/components/CartSummary";
-import { getCheckoutCart } from "@/lib/actions";
+import { getCheckoutCart } from "@/lib/actions/cart-actions";
 import { sleep } from "@/lib/utils";
 
 export default async function CartPage() {

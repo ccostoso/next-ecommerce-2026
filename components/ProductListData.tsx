@@ -1,4 +1,4 @@
-import { getProducts, getProductsParams } from "@/lib/actions";
+import { getProducts, getProductsParams } from "@/lib/actions/product-actions";
 import ProductList from "./ProductList";
 import { sleep } from "@/lib/utils";
 
