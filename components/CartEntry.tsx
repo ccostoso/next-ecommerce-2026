@@ -4,7 +4,7 @@ import { CartItemWithProduct } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { setCartItemQuantity } from "@/lib/actions";
 
@@ -13,10 +13,10 @@ type CartEntryProps = {
 };
 
 export default function CartEntry({ cartItem }: CartEntryProps) {
-    const [isUpdating, setIsUpdating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleQuantityChange = async (delta: number) => {
-        setIsUpdating(true);
+    const handleSetCartItemQuantity = async (delta: number) => {
+        setIsLoading(true);
         try {
             await setCartItemQuantity(
                 cartItem.product.id,
@@ -25,13 +25,27 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
         } catch (error) {
             console.error("Failed to update cart item quantity:", error);
         } finally {
-            setIsUpdating(false);
+            setIsLoading(false);
         }
     };
 
     return (
         <li className="border-b border-muted flex py-4 justify-between">
             <div className="flex space-x-4">
+                <div className="absolute z-10 -ml-1 -mt-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 rounded-full bg-background/90 text-foreground border border-border shadow-sm backdrop-blur-sm hover:bg-muted"
+                        onClick={() =>
+                            handleSetCartItemQuantity(-cartItem.quantity)
+                        }
+                        disabled={isLoading}
+                    >
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+
                 <div className="overflow-hidden rounded-md border border-muted w-20 h-20">
                     {cartItem.product.image && (
                         <Image
@@ -57,8 +71,8 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                         variant="ghost"
                         size="icon"
                         className="rounded-l-full"
-                        onClick={() => handleQuantityChange(-1)}
-                        disabled={isUpdating}
+                        onClick={() => handleSetCartItemQuantity(-1)}
+                        disabled={isLoading}
                     >
                         <Minus size={16} />
                     </Button>
@@ -67,8 +81,8 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                         variant="ghost"
                         size="icon"
                         className="rounded-r-full"
-                        onClick={() => handleQuantityChange(1)}
-                        disabled={isUpdating}
+                        onClick={() => handleSetCartItemQuantity(1)}
+                        disabled={isLoading}
                     >
                         <Plus size={16} />
                     </Button>
