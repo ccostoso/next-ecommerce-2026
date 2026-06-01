@@ -1,6 +1,6 @@
 import CartEntry from "@/components/CartEntry";
+import CartSummary from "@/components/CartSummary";
 import { getCheckoutCart } from "@/lib/actions";
-import { formatPrice } from "@/lib/utils";
 
 export default async function CartPage() {
     const cart = await getCheckoutCart();
@@ -21,6 +21,7 @@ export default async function CartPage() {
                     {cart?.items.map((item) => (
                         <CartEntry key={item.id} cartItem={item} />
                     ))}
+                    <CartSummary />
                 </div>
             )}
         </main>
