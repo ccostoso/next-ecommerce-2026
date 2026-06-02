@@ -25,8 +25,8 @@ export default function SearchLayout({
 }) {
     return (
         <main className="container mx-auto p-4">
-            <div className="flex gap-8">
-                <div className="flex-none w-48">
+            <div className="flex gap-0 md:gap-8 flex-col-reverse md:flex-row">
+                <div className="flex-none w-48 hidden lg:block">
                     <Suspense fallback={<CategorySidebarSkeleton />}>
                         <CategorySidebarData />
                     </Suspense>
