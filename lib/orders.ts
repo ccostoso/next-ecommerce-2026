@@ -88,7 +88,7 @@ export async function processCheckout() {
 
         (await cookies()).delete("cartId");
 
-        return createdOrder;
+        return { sessionUrl, order: createdOrder };
     } catch (error) {
         if (orderId && error instanceof Error && error.message.includes("Stripe")) {
             await prisma.order.update({
