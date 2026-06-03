@@ -12,13 +12,16 @@ export default async function CartPage() {
     const handleCheckout = async () => {
         "use server";
 
+        let sessionUrl: string;
+
         try {
-            const { sessionUrl } = await processCheckout();
-            redirect(sessionUrl);
+            ({ sessionUrl } = await processCheckout());
         } catch (error) {
             console.error("Checkout failed:", error);
             throw error;
         }
+
+        redirect(sessionUrl);
     };
 
     await sleep(1500);

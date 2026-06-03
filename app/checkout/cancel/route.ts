@@ -40,10 +40,10 @@ export async function GET(request: NextRequest) {
                 },
             });
         }
-
-        return redirect("/");
     } catch (error) {
         console.error("Error retrieving Stripe session or updating order:", error);
-        notFound();
+        throw error;
     }
+
+    return redirect("/");
 }

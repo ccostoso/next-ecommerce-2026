@@ -31,7 +31,7 @@ export async function createCheckoutSession(order: OrderWithItemsAndProducts) {
 
     // Define the success and cancel URLs for the Stripe checkout session, including placeholders for the session ID.
     const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/canceled?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`;
 
     // Create the Stripe checkout session with the line items and URLs, and return the session ID 
     // and URL for redirection.
