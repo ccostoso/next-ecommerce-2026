@@ -8,11 +8,13 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     typescript: true,
 });
 
+// This function creates a Stripe checkout session for the given order and returns the session URL for redirection.
 export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
     if (!order.orderItems || order.orderItems.length === 0) {
         throw new Error("Order has no items");
     }
 
+    // Map order items to Stripe line items format, including product details and price data.
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = order.orderItems.map((item) => ({
         price_data: {
             currency: "usd",
@@ -27,9 +29,12 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
         quantity: item.quantity,
     }))
 
-    const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cart/?canceled=true`;
+    // Define the success and cancel URLs for the Stripe checkout session, including placeholders for the session ID.
+    const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/canceled?session_id={CHECKOUT_SESSION_ID}`;
 
+    // Create the Stripe checkout session with the line items and URLs, and return the session ID 
+    // and URL for redirection.
     try {
         const session = await stripe.checkout.sessions.create({
             line_items: lineItems,
