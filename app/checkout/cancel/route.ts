@@ -46,6 +46,4 @@ export async function GET(request: NextRequest) {
         console.error("Error retrieving Stripe session or updating order:", error);
         notFound();
     }
-
-    return redirect("/");
 }
