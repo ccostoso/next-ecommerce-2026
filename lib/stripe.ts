@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { OrderWithItemsAndProduct } from "./types";
+import { OrderWithItemsAndProducts } from "./types";
 
 if (!process.env.STRIPE_SECRET_KEY) throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
 
@@ -9,7 +9,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 // This function creates a Stripe checkout session for the given order and returns the session URL for redirection.
-export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
+export async function createCheckoutSession(order: OrderWithItemsAndProducts) {
     if (!order.orderItems || order.orderItems.length === 0) {
         throw new Error("Order has no items");
     }
