@@ -21,7 +21,13 @@ export type CartItemWithProduct = Prisma.CartItemGetPayload<{
     };
 }>;
 
-export type OrderWithItemsAndProduct = Prisma.OrderGetPayload<{
+export type OrderItemWithProduct = Prisma.OrderItemGetPayload<{
+    include: {
+        product: true;
+    };
+}>;
+
+export type OrderWithItemsAndProducts = Prisma.OrderGetPayload<{
     include: {
         orderItems: {
             include: {
@@ -34,5 +40,5 @@ export type OrderWithItemsAndProduct = Prisma.OrderGetPayload<{
 // Unused for now, but could be useful for future features like order confirmation page or order history
 export type ProcessCheckoutResult = {
     sessionUrl: string;
-    order: OrderWithItemsAndProduct;
+    order: OrderWithItemsAndProducts;
 };
