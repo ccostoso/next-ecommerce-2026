@@ -30,3 +30,9 @@ export type OrderWithItemsAndProduct = Prisma.OrderGetPayload<{
         };
     };
 }>;
+
+// Unused for now, but could be useful for future features like order confirmation page or order history
+export type ProcessCheckoutResult = {
+    sessionUrl: string;
+    order: OrderWithItemsAndProduct;
+};

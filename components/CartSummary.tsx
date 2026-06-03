@@ -2,6 +2,7 @@ import { getCheckoutCart } from "@/lib/actions/cart-actions";
 import { formatPrice } from "@/lib/utils";
 
 export default async function CartSummary() {
+    // Retrieve the cart items and calculate the subtotal, taxes, shipping, and total price
     const cartItems = await getCheckoutCart();
 
     if (!cartItems || cartItems.items.length === 0) return null;

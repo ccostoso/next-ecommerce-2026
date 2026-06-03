@@ -13,7 +13,7 @@ export default async function CartPage() {
         "use server";
 
         try {
-            const { sessionUrl, order } = await processCheckout();
+            const { sessionUrl } = await processCheckout();
             redirect(sessionUrl);
         } catch (error) {
             console.error("Checkout failed:", error);
@@ -43,7 +43,7 @@ export default async function CartPage() {
                     </div>
                     <CartSummary />
 
-                    <form action={handleCheckout} method="POST">
+                    <form action={handleCheckout}>
                         <Button size="lg" className="mt-4 w-full">
                             Proceed to checkout
                         </Button>

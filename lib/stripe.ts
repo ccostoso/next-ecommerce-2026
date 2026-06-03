@@ -21,7 +21,8 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
                 description: item.product.description ?? "",
                 images: [item.product.image ?? ""],
             },
-            unit_amount: item.price * 100,
+            // Stripe expects integer cents, so round the floating-point dollar value first.
+            unit_amount: Math.round(item.price * 100),
         },
         quantity: item.quantity,
     }))
