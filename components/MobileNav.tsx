@@ -17,13 +17,13 @@ export default function MobileNav() {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="md:hidden">
+                <Button variant="outline" size="icon" className="lg:hidden">
                     <Menu className="h-5 w-5" />
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-full">
                 <SheetHeader>
-                    <SheetTitle>Menu</SheetTitle>
+                    <SheetTitle>NextCommerce</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 p-4">
                     <SheetClose asChild>

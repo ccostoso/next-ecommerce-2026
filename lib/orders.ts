@@ -1,21 +1,28 @@
 "use server";
 
-import { cookies } from "next/dist/server/request/cookies";
+import { cookies } from "next/headers";
 import { getCheckoutCart } from "./actions/cart-actions";
+import { updateTag } from "next/cache";
 import { prisma } from "./prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { createCheckoutSession } from "./stripe";
+import { ProcessCheckoutResult } from "./types";
 
-export async function processCheckout() {
-    const cart = await getCheckoutCart();
+// This function handles the checkout process by creating an order, 
+// generating a Stripe checkout session, and returning the session URL for redirection.
+export async function processCheckout(): Promise<ProcessCheckoutResult> {
+    // 1. Retrieve the current cart for the user
+    const cart = await getCheckoutCart("db");
 
     if (!cart || cart.items.length === 0) {
         throw new Error("Cart is empty");
     }
 
+    // 2. Create a new order in the database and associate it with the cart items
     let orderId: string | null = null;
 
     try {
+        // Use a transaction to ensure that all database operations succeed or fail together
         const order = await prisma.$transaction(async (tx) => {
             const total = cart.subtotal;
 
@@ -50,9 +57,15 @@ export async function processCheckout() {
             return newOrder;
         });
 
+        // Invalidate cached cart reads for this cart id.
+        updateTag(`cart-${cart.id}`);
+
+        console.log("Order created successfully:", order);
+
+        // Store the order ID for error handling in case of Stripe session creation failure
         orderId = order.id.toString();
 
-        // 1. Reload created order
+        // Reload created order
         const createdOrder = await prisma.order.findUnique({
             where: { id: order.id },
             include: {
@@ -64,38 +77,43 @@ export async function processCheckout() {
             },
         });
 
-        // 2. Confirm that the order was created successfully
+        // Confirm that the order was created successfully
         if (!createdOrder) {
             throw new Error("Order not found");
         }
 
-        // 3. Create the Stripe session
+        // Create the Stripe session
         const { sessionId, sessionUrl } = await createCheckoutSession(createdOrder);
 
-        // 4. Return the session URL and handle errors
+        // Return the session URL and handle errors
         if (!sessionId || !sessionUrl) {
             throw new Error("Failed to create Stripe checkout session");
         }
 
-        // 5. Store the session ID in the order and change the order status
+        // Store the session ID in the order and change the order status
         await prisma.order.update({
             where: { id: createdOrder.id },
             data: {
                 stripeSessionId: sessionId,
-                status: "pending",
+                status: "pending_payment",
             },
         });
 
+        // Clear the cart cookie to prevent stale cart data
         (await cookies()).delete("cartId");
 
-        return createdOrder;
+        // Return the session URL and the created order for potential future use (e.g., order confirmation page)
+        return { sessionUrl, order: createdOrder };
     } catch (error) {
+        // If an error occurs during the order creation or Stripe session creation, 
+        // update the order status to "failed" if we have an order ID
         if (orderId && error instanceof Error && error.message.includes("Stripe")) {
             await prisma.order.update({
                 where: { id: orderId },
                 data: { status: "failed" },
             });
         }
+
         console.error("Error creating order:", error);
         throw new Error("Failed to create order");
     }

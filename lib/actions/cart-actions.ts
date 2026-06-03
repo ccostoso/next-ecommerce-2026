@@ -5,33 +5,48 @@ import { prisma } from "./../prisma";
 import { unstable_cache, updateTag } from "next/cache";
 import { CheckoutCart, ProductCart } from "./../types";
 
-async function getProductCartFromCookies(): Promise<ProductCart | null> {
-    const id = (await (cookies())).get("cartId")?.value;
+async function getCartIdFromCookies() {
+    return (await cookies()).get("cartId")?.value;
+}
+
+async function fetchProductCart(id: string): Promise<ProductCart | null> {
+    return prisma.cart.findUnique({
+        where: { id },
+        include: {
+            items: {
+                include: {
+                    product: true,
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            },
+        },
+    });
+}
+
+async function getCachedProductCartFromCookies(): Promise<ProductCart | null> {
+    const id = await getCartIdFromCookies();
 
     if (!id) return null;
 
-    // Use `unstable_cache` to cache the result of fetching the cart from the database based on the cart ID. 
-    // The cache key is generated using the cart ID, and the cache is tagged with the same key for invalidation 
-    // purposes.
-    return unstable_cache(async (id: string) => {
-        return await prisma.cart.findUnique({
-            where: { id },
-            include: {
-                items: {
-                    include: {
-                        product: true,
-                    },
-                    orderBy: {
-                        createdAt: "desc",
-                    },
-                },
-            },
-        });
-    }, [`cart-${id}`], { tags: [`cart-${id}`] })(id);
+    return unstable_cache(
+        async () => fetchProductCart(id),
+        [`cart-${id}`],
+        { tags: [`cart-${id}`] }
+    )();
+}
+
+async function getDBProductCartFromCookies(): Promise<ProductCart | null> {
+    const id = await getCartIdFromCookies();
+
+    if (!id) return null;
+
+    return fetchProductCart(id);
 }
 
 export async function getOrCreateProductCart(): Promise<ProductCart> {
-    let cart = await getProductCartFromCookies();
+    let cart = await getCachedProductCartFromCookies();
 
     if (cart) return cart;
 
@@ -62,8 +77,19 @@ export async function getOrCreateProductCart(): Promise<ProductCart> {
     return cart;
 }
 
-export async function getCheckoutCart(): Promise<CheckoutCart | null> {
-    const cart = await getProductCartFromCookies();
+type GetCheckoutCartSources = "cache" | "db";
+
+export async function getCheckoutCart(source: GetCheckoutCartSources = "cache"): Promise<CheckoutCart | null> {
+    let cart: ProductCart | null = null;
+
+    switch (source) {
+        case "cache":
+            cart = await getCachedProductCartFromCookies();
+            break;
+        case "db":
+            cart = await getDBProductCartFromCookies();
+            break;
+    }
 
     if (!cart) return null;
 
@@ -109,7 +135,7 @@ export async function addToCart(productId: string, quantity: number = 1) {
 export async function setCartItemQuantity(productId: string, quantity: number) {
     if (quantity < 0) throw new Error("Quantity cannot be negative");
 
-    const cart = await getProductCartFromCookies();
+    const cart = await getCachedProductCartFromCookies();
 
     if (!cart) throw new Error("Cart not found");
 

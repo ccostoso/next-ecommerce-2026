@@ -30,12 +30,12 @@ export default function SortingControls() {
     };
 
     return (
-        <div className="w-full p-4 h-full flex flex-col">
+        <div className="w-full py-4 h-full flex flex-col">
             <h3 className="text-sm text-muted-foreground mb-2">
                 <ListFilter className="inline-block mr-2" />
                 Sort by
             </h3>
-            <div className="flex gap-3 text-sm mb-8">
+            <div className="flex gap-3 text-sm mb-0 lg:mb-8">
                 <ul>
                     <li>
                         <Link

@@ -16,12 +16,12 @@ export default function Navbar() {
                 <div className="flex items-center gap-6">
                     <Link
                         href="/"
-                        className="text-2xl font-bold hidden md:block"
+                        className="text-2xl font-bold hidden lg:block"
                     >
                         NextCommerce
                     </Link>
 
-                    <nav className="hidden md:flex items-center gap-6">
+                    <nav className="hidden lg:flex items-center gap-6">
                         {categories.map((category) => (
                             <Link
                                 key={category.id}
