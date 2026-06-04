@@ -1,4 +1,4 @@
-import { Prisma, Product } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import { hashPassword } from "@/lib/auth";
 
@@ -88,6 +88,8 @@ async function main() {
         });
     }
 
+    console.log("Products and categories created!");
+
     const users = [
         {
             name: "John User",
@@ -109,7 +111,7 @@ async function main() {
         });
     }
 
-    console.log("Users created");
+    console.log("Users created!");
 }
 
 main()
