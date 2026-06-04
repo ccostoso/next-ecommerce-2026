@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-server";
 import { notFound } from "next/navigation";
 import OrderItem from "./OrderItem";
 import OrderSummary from "./OrderSummary";

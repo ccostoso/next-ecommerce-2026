@@ -6,7 +6,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-server";
 import { Suspense } from "react";
 import ProductsSkeleton from "../components/skeletons/ProductsSkeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
