@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma-server";
 import { Suspense } from "react";
 import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton";
 import { notFound } from "next/navigation";
