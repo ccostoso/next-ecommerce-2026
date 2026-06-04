@@ -19,6 +19,7 @@ import {
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field";
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
     const form = useForm<LoginSchemaType>({
@@ -29,9 +30,21 @@ export default function SignInPage() {
         },
     });
 
-    const onSubmit = (data: LoginSchemaType) => {
+    const onSubmit = async (data: LoginSchemaType) => {
         console.log("Form Data:", data);
-        // Here you would typically send the data to your server for authentication
+
+        const result = await signIn("credentials", {
+            email: data.email,
+            password: data.password,
+            redirect: false,
+            callbackUrl: "/",
+        });
+
+        if (result?.error) {
+            console.log("Sign in error:", result.error);
+        } else {
+            console.log("Sign in successful, redirecting...");
+        }
     };
 
     return (

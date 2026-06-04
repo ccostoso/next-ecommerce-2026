@@ -94,13 +94,13 @@ async function main() {
         {
             name: "John User",
             email: "user@example.com",
-            password: "password123",
+            password: "password12#",
             role: "user",
         },
         {
             name: "Jane Admin",
             email: "admin@example.com",
-            password: "admin123",
+            password: "admin12#",
             role: "admin",
         },
     ] satisfies Prisma.UserCreateInput[];
