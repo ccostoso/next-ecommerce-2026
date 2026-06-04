@@ -20,8 +20,12 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export default function SignInPage() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -31,20 +35,29 @@ export default function SignInPage() {
     });
 
     const onSubmit = async (data: LoginSchemaType) => {
-        console.log("Form Data:", data);
+        setIsLoading(true);
 
-        const result = await signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-            callbackUrl: "/",
-        });
+        try {
+            const result = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+                callbackUrl: "/",
+            });
 
-        if (result?.error) {
-            console.log("Sign in error:", result.error);
-        } else {
-            console.log("Sign in successful, redirecting...");
+            if (result?.error) {
+                console.log("Sign-in error:", result.error);
+                if (result.error === "CredentialsSignin") {
+                    setError("Invalid email or password.");
+                } else {
+                    setError("An unexpected error occurred. Please try again.");
+                }
+            }
+        } catch (error) {
+            setError("An unexpected error occurred. Please try again.");
         }
+
+        setIsLoading(false);
     };
 
     return (
@@ -54,6 +67,13 @@ export default function SignInPage() {
                     <CardTitle>Sign in to your account</CardTitle>
                 </CardHeader>
                 <CardContent>
+                    <p
+                        className="min-h-5 text-sm text-destructive text-center"
+                        aria-live="polite"
+                        aria-atomic="true"
+                    >
+                        {error ?? "\u00A0"}
+                    </p>
                     <form
                         className="space-y-4"
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -124,20 +144,21 @@ export default function SignInPage() {
                                 // className="w-full rounded-md px-4 py-2 hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                                 variant="default"
                                 className="w-full mt-4"
+                                disabled={isLoading}
                             >
-                                Submit
+                                {isLoading ? "Signing in..." : "Submit"}
                             </Button>
                         </FieldGroup>
                     </form>
                 </CardContent>
                 <CardFooter className="mt-6 justify-center text-center">
                     <p className="font-medium text-muted-foreground text-center">
-                        Not registered?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link
                             className="text-primary hover:underline"
                             href="/auth/signup"
                         >
-                            Click here to create an account.
+                            Click here to register.
                         </Link>
                     </p>
                 </CardFooter>
