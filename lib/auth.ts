@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs"
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [],
     secret: process.env.BETTER_AUTH_SECRET,
+    pages: {
+        signIn: "/auth/signin",
+    },
 })
 
 export async function hashPassword(password: string) {
