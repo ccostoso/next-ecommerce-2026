@@ -1,8 +1,37 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session, User } from "next-auth"
 import bcrypt from "bcryptjs"
 import Credentials from "next-auth/providers/credentials"
 import { LoginSchema } from "./schemas"
 import { prisma } from "./prisma"
+import { JWT } from "next-auth/jwt"
+
+declare module "next-auth" {
+    interface User {
+        id: string;
+        email: string;
+        name?: string | null;
+        role?: string;
+    }
+
+    interface Session {
+        user: {
+            id: string;
+            email: string;
+            name?: string | null;
+            role?: string;
+        };
+        refreshedAt?: string;
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        id: string;
+        email: string;
+        name?: string | null;
+        role?: string;
+    }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
@@ -18,8 +47,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
                 const { email, password } = parsedCredentials.data;
-                // Here you would typically fetch the user from your database
-                // and verify the password using bcrypt
 
                 try {
                     const user = await prisma.user.findUnique({ where: { email } });
@@ -35,8 +62,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
 
                     // Return the user object (you can include any additional fields you want)
-                    // return { id: user.id, email: user.email };
-                    return user;
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        role: user.role
+                    };
                 } catch (error) {
                     console.error("Error during authentication:", error);
                     return null;
@@ -45,6 +76,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     secret: process.env.BETTER_AUTH_SECRET,
+    callbacks: {
+        async jwt({ token, user }: { token: JWT, user?: User }) {
+            if (user) {
+                token.id = user.id;
+                token.role = user.role;
+            }
+            return token;
+        },
+        async session({ session, token }: { session: Session, token: JWT }) {
+            if (session.user) {
+                session.user.id = token.id;
+                session.user.role = token.role;
+            }
+            return session;
+        },
+    },
     pages: {
         signIn: "/auth/signin",
     },

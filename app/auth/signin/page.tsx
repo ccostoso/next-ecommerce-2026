@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,23 +7,18 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { LoginSchema, LoginSchemaType } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field";
-import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
+import SignInForm from "./SignInForm";
 
 export default function SignInPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { data: session } = useSession();
 
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
@@ -52,6 +46,8 @@ export default function SignInPage() {
                 } else {
                     setError("An unexpected error occurred. Please try again.");
                 }
+            } else {
+                setError(null);
             }
         } catch (error) {
             setError("An unexpected error occurred. Please try again.");
@@ -74,82 +70,12 @@ export default function SignInPage() {
                     >
                         {error ?? "\u00A0"}
                     </p>
-                    <form
-                        className="space-y-4"
-                        onSubmit={form.handleSubmit(onSubmit)}
-                    >
-                        <FieldGroup>
-                            {/* Email Field */}
-                            <Controller
-                                name="email"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel
-                                            htmlFor="login-email"
-                                            className="block text-sm font-medium"
-                                        >
-                                            Email
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="login-email"
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder="Enter your email"
-                                            autoComplete="off"
-                                            className="w-full rounded-md border px-3 py-2"
-                                        />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-
-                            {/* Password Field */}
-                            <Controller
-                                name="password"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel
-                                            htmlFor="login-password"
-                                            className="block text-sm font-medium"
-                                        >
-                                            Password
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            type="password"
-                                            id="login-password"
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder="Enter your password"
-                                            autoComplete="off"
-                                            className="w-full rounded-md border px-3 py-2"
-                                        />
-                                        {fieldState.invalid && (
-                                            <FieldError
-                                                errors={[fieldState.error]}
-                                            />
-                                        )}
-                                    </Field>
-                                )}
-                            />
-
-                            {/* Submit Button */}
-                            <Button
-                                type="submit"
-                                // className="w-full rounded-md px-4 py-2 hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                variant="default"
-                                className="w-full mt-4"
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Signing in..." : "Submit"}
-                            </Button>
-                        </FieldGroup>
-                    </form>
+                    <SignInForm
+                        form={form}
+                        onSubmit={onSubmit}
+                        isLoading={isLoading}
+                        session={session}
+                    />
                 </CardContent>
                 <CardFooter className="mt-6 justify-center text-center">
                     <p className="font-medium text-muted-foreground text-center">

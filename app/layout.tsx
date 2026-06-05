@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -33,16 +34,18 @@ export default function RootLayout({
             suppressHydrationWarning
         >
             <body className="min-h-screen flex flex-col">
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <Navbar />
-                    {children}
-                    <Footer />
-                </ThemeProvider>
+                <SessionProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <Navbar />
+                        {children}
+                        <Footer />
+                    </ThemeProvider>
+                </SessionProvider>
             </body>
         </html>
     );
