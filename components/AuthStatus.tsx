@@ -3,11 +3,19 @@
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
-import { LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut, User } from "lucide-react";
 import Link from "next/link";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator,
+    DropdownMenuLabel,
+} from "./ui/dropdown-menu";
 
 export default function AuthStatus() {
-    const { status } = useSession();
+    const { status, data: session } = useSession();
 
     switch (status) {
         case "loading":
@@ -23,9 +31,26 @@ export default function AuthStatus() {
         default:
             // case "authenticated":
             return (
-                <Button variant="outline" size="icon" onClick={() => signOut()}>
-                    <LogOut className="h-5 w-5" />
-                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                            <User className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>
+                            {session?.user?.name ?? "Account"}
+                        </DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                            <Link href="/account">Profile</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => signOut()}>
+                            <LogOut className="h-5 w-5" />
+                            Sign out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             );
     }
 }
