@@ -8,6 +8,7 @@ import SearchInput from "./SearchInput";
 import CartIndicator from "./CartIndicator";
 import { Suspense } from "react";
 import CartIndicatorSkeleton from "./skeletons/CartIndicatorSkeleton";
+import AuthStatus from "./AuthStatus";
 
 export default function Navbar() {
     return (
@@ -46,6 +47,7 @@ export default function Navbar() {
                             <Search className="h-5 w-5" />
                         </Link>
                     </Button>
+                    <AuthStatus />
                     <Suspense fallback={<CartIndicatorSkeleton />}>
                         <CartIndicator />
                     </Suspense>

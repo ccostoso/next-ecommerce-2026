@@ -14,11 +14,13 @@ import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import SignInForm from "./SignInForm";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { data: session } = useSession();
+    const { update: updateSession } = useSession();
+    const router = useRouter();
 
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
@@ -48,6 +50,8 @@ export default function SignInPage() {
                 }
             } else {
                 setError(null);
+                await updateSession();
+                router.push("/");
             }
         } catch (error) {
             setError("An unexpected error occurred. Please try again.");
@@ -74,7 +78,6 @@ export default function SignInPage() {
                         form={form}
                         onSubmit={onSubmit}
                         isLoading={isLoading}
-                        session={session}
                     />
                 </CardContent>
                 <CardFooter className="mt-6 justify-center text-center">

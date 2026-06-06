@@ -77,7 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ],
     secret: process.env.BETTER_AUTH_SECRET,
     callbacks: {
-        async jwt({ token, user }: { token: JWT, user?: User }) {
+        async jwt({ token, user }: { token: JWT, user: User }) {
             if (user) {
                 token.id = user.id;
                 token.role = user.role;

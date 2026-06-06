@@ -9,20 +9,17 @@ import {
 } from "@/components/ui/field";
 import type { UseFormReturn, SubmitHandler } from "react-hook-form";
 import { LoginSchemaType } from "@/lib/schemas";
-import { Session } from "next-auth";
 
 type SignInFormProps = {
     form: UseFormReturn<LoginSchemaType>; // Replace with the actual type from react-hook-form
     onSubmit: SubmitHandler<LoginSchemaType>; // Replace with the actual data type
     isLoading: boolean;
-    session: Session | null;
 };
 
 export default function SignInForm({
     form,
     onSubmit,
     isLoading,
-    session,
 }: SignInFormProps) {
     return (
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -81,8 +78,6 @@ export default function SignInForm({
                         </Field>
                     )}
                 />
-
-                {session && <pre>{JSON.stringify(session, null, 2)}</pre>}
 
                 {/* Submit Button */}
                 <Button
