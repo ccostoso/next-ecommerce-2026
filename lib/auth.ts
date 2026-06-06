@@ -1,7 +1,7 @@
 import NextAuth, { Session, User } from "next-auth"
 import bcrypt from "bcryptjs"
 import Credentials from "next-auth/providers/credentials"
-import { LoginSchema } from "./schemas"
+import { LoginSchema, RegistrationSchema, RegistrationSchemaType } from "./schemas"
 import { prisma } from "./prisma"
 import { JWT } from "next-auth/jwt"
 
@@ -61,7 +61,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         return null;
                     }
 
-                    // Return the user object (you can include any additional fields you want)
                     return {
                         id: user.id,
                         email: user.email,
@@ -104,4 +103,52 @@ export async function hashPassword(password: string) {
 
 export async function verifyPassword(password: string, hashedPassword: string) {
     return await bcrypt.compare(password, hashedPassword)
+}
+
+export async function registerUser(data: RegistrationSchemaType) {
+    const parsedData = RegistrationSchema.safeParse(data);
+
+    if (!parsedData.success) {
+        return {
+            success: false,
+            error: "Invalid registration data",
+            issues: parsedData.error.issues,
+        };
+    }
+
+    const { name, email, password } = parsedData.data;
+
+    try {
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+
+
+        if (existingUser) {
+            return {
+                success: false,
+                error: "Error creating user",
+                issues: [],
+            };
+        }
+
+        const hashedPassword = await hashPassword(password);
+
+        const newUser = await prisma.user.create({
+            data: {
+                name: name || null,
+                email,
+                password: hashedPassword,
+                role: "user",
+            },
+        });
+
+        const { password: _, ...userWithoutPassword } = newUser;
+
+        return { success: true, user: userWithoutPassword };
+    } catch (error) {
+        console.error("Error creating user:", error);
+        return {
+            success: false,
+            error: "Error creating user",
+        };
+    }
 }
