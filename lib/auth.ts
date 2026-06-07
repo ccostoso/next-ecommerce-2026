@@ -1,9 +1,10 @@
-import NextAuth, { Session, User } from "next-auth"
+import NextAuth from "next-auth"
 import bcrypt from "bcryptjs"
 import Credentials from "next-auth/providers/credentials"
+import type { } from "next-auth/jwt"
 import { LoginSchema, RegistrationSchema, RegistrationSchemaType } from "./schemas"
 import { prisma } from "./prisma"
-import { JWT } from "next-auth/jwt"
+import { authConfig } from "./auth.config"
 
 declare module "next-auth" {
     interface User {
@@ -26,14 +27,15 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
     interface JWT {
-        id: string;
-        email: string;
+        id?: string;
+        email?: string;
         name?: string | null;
         role?: string;
     }
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
     providers: [
         Credentials({
             credentials: {
@@ -74,26 +76,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
         }),
     ],
-    secret: process.env.BETTER_AUTH_SECRET,
-    callbacks: {
-        async jwt({ token, user }: { token: JWT, user: User }) {
-            if (user) {
-                token.id = user.id;
-                token.role = user.role;
-            }
-            return token;
-        },
-        async session({ session, token }: { session: Session, token: JWT }) {
-            if (session.user) {
-                session.user.id = token.id;
-                session.user.role = token.role;
-            }
-            return session;
-        },
-    },
-    pages: {
-        signIn: "/auth/signin",
-    },
 })
 
 export async function hashPassword(password: string) {
@@ -141,7 +123,8 @@ export async function registerUser(data: RegistrationSchemaType) {
             },
         });
 
-        const { password: _, ...userWithoutPassword } = newUser;
+        const { password: userPassword, ...userWithoutPassword } = newUser;
+        void userPassword;
 
         return { success: true, user: userWithoutPassword };
     } catch (error) {
