@@ -11,9 +11,14 @@ import { RegistrationSchema, RegistrationSchemaType } from "@/lib/schemas";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import SignInForm from "./SignUpForm";
+import SignUpForm from "./SignUpForm";
+import { registerUser } from "@/lib/actions/auth-actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
     const form = useForm<RegistrationSchemaType>({
         resolver: zodResolver(RegistrationSchema),
         defaultValues: {
@@ -25,7 +30,24 @@ export default function SignUpPage() {
     });
 
     const onSubmit = async (data: RegistrationSchemaType) => {
-        console.log("Form data:", data);
+        form.clearErrors();
+
+        try {
+            const result = await registerUser(data);
+
+            if (!result?.success) {
+                setError(
+                    result?.error ||
+                        "An unexpected error occurred. Please try again.",
+                );
+                return;
+            }
+
+            router.push("/auth/signin");
+        } catch (error) {
+            console.error(error);
+            setError("An unexpected error occurred. Please try again.");
+        }
     };
 
     return (
@@ -40,9 +62,9 @@ export default function SignUpPage() {
                         aria-live="polite"
                         aria-atomic="true"
                     >
-                        {"\u00A0"}
+                        {error ?? "\u00A0"}
                     </p>
-                    <SignInForm
+                    <SignUpForm
                         form={form}
                         onSubmit={onSubmit}
                         isLoading={false}

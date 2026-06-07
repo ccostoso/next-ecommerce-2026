@@ -84,9 +84,11 @@ export default function SignInForm({
                     type="submit"
                     variant="default"
                     className="w-full mt-4"
-                    disabled={isLoading}
+                    disabled={form.formState.isSubmitting || isLoading}
                 >
-                    {isLoading ? "Signing in..." : "Submit"}
+                    {form.formState.isSubmitting || isLoading
+                        ? "Signing in..."
+                        : "Submit"}
                 </Button>
             </FieldGroup>
         </form>

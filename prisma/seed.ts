@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import { hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/passwords";
 
 async function main() {
     await prisma.orderItem.deleteMany();
