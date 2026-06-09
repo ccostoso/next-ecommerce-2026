@@ -41,7 +41,10 @@ export async function createCheckoutSession(order: OrderWithItemsAndProducts) {
             mode: "payment",
             success_url: successUrl,
             cancel_url: cancelUrl,
-            metadata: { orderId: order.id.toString() },
+            metadata: {
+                orderId: order.id.toString(),
+                ...(order.userId && { userId: order.userId.toString() }),
+            },
         })
 
         return { sessionId: session.id, sessionUrl: session.url }

@@ -7,12 +7,15 @@ import { prisma } from "./prisma"
 import { Prisma } from "@/generated/prisma/client"
 import { createCheckoutSession } from "./stripe"
 import { ProcessCheckoutResult } from "./types"
+import { auth } from "./auth"
 
 // This function handles the checkout process by creating an order, 
 // generating a Stripe checkout session, and returning the session URL for redirection.
 export async function processCheckout(): Promise<ProcessCheckoutResult> {
     // 1. Retrieve the current cart for the user
     const cart = await getCheckoutCart("db")
+    const session = await auth()
+    const userId = session?.user?.id
 
     if (!cart || cart.items.length === 0) {
         throw new Error("Cart is empty")
@@ -28,7 +31,10 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
 
             // Create a new order in the database
             const newOrder = await tx.order.create({
-                data: { total }
+                data: {
+                    total,
+                    userId: userId || null
+                }
             })
 
             // Map cart items to order items
@@ -85,7 +91,7 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
         // Create the Stripe session
         const { sessionId, sessionUrl } = await createCheckoutSession(createdOrder)
 
-        // Return the session URL and handle errors
+        // Handle errors if session creation fails
         if (!sessionId || !sessionUrl) {
             throw new Error("Failed to create Stripe checkout session")
         }
