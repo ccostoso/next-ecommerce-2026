@@ -1,10 +1,10 @@
-import { formatPrice } from "@/lib/utils";
-import Image from "next/image";
-import { OrderItemWithProduct } from "@/lib/types";
+import { formatPrice } from "@/lib/utils"
+import Image from "next/image"
+import { OrderItemWithProduct } from "@/lib/types"
 
 type OrderItemProps = {
-    orderItem: OrderItemWithProduct;
-};
+    orderItem: OrderItemWithProduct
+}
 
 export default function OrderItem({ orderItem }: OrderItemProps) {
     return (
@@ -40,5 +40,5 @@ export default function OrderItem({ orderItem }: OrderItemProps) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

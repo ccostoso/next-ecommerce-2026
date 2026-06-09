@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { Search } from "lucide-react";
-import { ModeToggle } from "./ThemeToggle";
-import MobileNav from "./MobileNav";
-import { categories } from "../lib/categories";
-import SearchInput from "./SearchInput";
-import CartIndicator from "./CartIndicator";
-import { Suspense } from "react";
-import CartIndicatorSkeleton from "./skeletons/CartIndicatorSkeleton";
-import AuthStatus from "./AuthStatus";
+import Link from "next/link"
+import { Button } from "./ui/button"
+import { Search } from "lucide-react"
+import { ModeToggle } from "./ThemeToggle"
+import MobileNav from "./MobileNav"
+import { categories } from "../lib/categories"
+import SearchInput from "./SearchInput"
+import CartIndicator from "./CartIndicator"
+import { Suspense } from "react"
+import CartIndicatorSkeleton from "./skeletons/CartIndicatorSkeleton"
+import AuthStatus from "./AuthStatus"
 
 export default function Navbar() {
     return (
@@ -55,5 +55,5 @@ export default function Navbar() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

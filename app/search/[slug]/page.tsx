@@ -1,21 +1,21 @@
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { prisma } from "@/lib/prisma-server";
-import { Suspense } from "react";
-import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton";
-import { notFound } from "next/navigation";
-import ProductListData from "@/components/ProductListData";
+import Breadcrumbs from "@/components/Breadcrumbs"
+import { prisma } from "@/lib/prisma-server"
+import { Suspense } from "react"
+import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton"
+import { notFound } from "next/navigation"
+import ProductListData from "@/components/ProductListData"
 
 type CategoryPageProps = {
-    params: Promise<{ slug: string }>;
-    searchParams: Promise<{ sort?: string }>;
-};
+    params: Promise<{ slug: string }>
+    searchParams: Promise<{ sort?: string }>
+}
 
 export default async function CategoryPage({
     params,
     searchParams,
 }: CategoryPageProps) {
-    const { slug } = await params;
-    const { sort } = await searchParams;
+    const { slug } = await params
+    const { sort } = await searchParams
 
     const category = await prisma.category.findUnique({
         where: {
@@ -25,9 +25,9 @@ export default async function CategoryPage({
             name: true,
             slug: true,
         },
-    });
+    })
 
-    if (!category) notFound();
+    if (!category) notFound()
 
     const breadcrumbItems = [
         { label: "Products", href: "/" },
@@ -35,7 +35,7 @@ export default async function CategoryPage({
             label: category?.name,
             href: `/search/${category.slug}`,
         },
-    ];
+    ]
 
     return (
         <>
@@ -45,5 +45,5 @@ export default async function CategoryPage({
                 <ProductListData params={{ slug, sort }} />
             </Suspense>
         </>
-    );
+    )
 }

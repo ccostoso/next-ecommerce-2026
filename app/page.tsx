@@ -5,27 +5,27 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination";
-import { prisma } from "@/lib/prisma-server";
-import { Suspense } from "react";
-import ProductsSkeleton from "../components/skeletons/ProductsSkeleton";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ProductListData from "@/components/ProductListData";
-import { stripe } from "@/lib/stripe";
+} from "@/components/ui/pagination"
+import { prisma } from "@/lib/prisma-server"
+import { Suspense } from "react"
+import ProductsSkeleton from "../components/skeletons/ProductsSkeleton"
+import Breadcrumbs from "@/components/Breadcrumbs"
+import ProductListData from "@/components/ProductListData"
+import { stripe } from "@/lib/stripe"
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
-const PAGE_SIZE = 3;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+const PAGE_SIZE = 3
 
 export default async function HomePage(props: { searchParams: SearchParams }) {
-    const searchParams = await props.searchParams;
+    const searchParams = await props.searchParams
 
-    const page = Number(searchParams.page) || 1;
-    const total = await prisma.product.count();
+    const page = Number(searchParams.page) || 1
+    const total = await prisma.product.count()
 
     // Calculate total pages based on total products and page size
-    const totalPages = Math.ceil(total / PAGE_SIZE);
+    const totalPages = Math.ceil(total / PAGE_SIZE)
 
-    console.log(await stripe.events.list({ limit: 1 }));
+    console.log(await stripe.events.list({ limit: 1 }))
 
     return (
         <main className="container mx-auto p-4 flex-1">
@@ -41,7 +41,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
                     </PaginationItem>
 
                     {Array.from({ length: totalPages }).map((_, i) => {
-                        const pageNum = i + 1;
+                        const pageNum = i + 1
                         if (
                             pageNum === 1 ||
                             pageNum === totalPages ||
@@ -56,9 +56,9 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
                                         {pageNum}
                                     </PaginationLink>
                                 </PaginationItem>
-                            );
+                            )
                         }
-                        return null;
+                        return null
                     })}
 
                     <PaginationItem>
@@ -67,5 +67,5 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
                 </PaginationContent>
             </Pagination>
         </main>
-    );
+    )
 }

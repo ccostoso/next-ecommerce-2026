@@ -8,29 +8,29 @@ import { verifyPassword } from "./passwords"
 
 declare module "next-auth" {
     interface User {
-        id: string;
-        email: string;
-        name?: string | null;
-        role?: string;
+        id: string
+        email: string
+        name?: string | null
+        role?: string
     }
 
     interface Session {
         user: {
-            id: string;
-            email: string;
-            name?: string | null;
-            role?: string;
-        };
-        refreshedAt?: string;
+            id: string
+            email: string
+            name?: string | null
+            role?: string
+        }
+        refreshedAt?: string
     }
 }
 
 declare module "next-auth/jwt" {
     interface JWT {
-        id?: string;
-        email?: string;
-        name?: string | null;
-        role?: string;
+        id?: string
+        email?: string
+        name?: string | null
+        role?: string
     }
 }
 
@@ -43,24 +43,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: {},
             },
             async authorize(credentials) {
-                const parsedCredentials = LoginSchema.safeParse(credentials);
+                const parsedCredentials = LoginSchema.safeParse(credentials)
                 if (!parsedCredentials.success) {
-                    console.error("Invalid credentials format:", parsedCredentials.error);
-                    return null;
+                    console.error("Invalid credentials format:", parsedCredentials.error)
+                    return null
                 }
-                const { email, password } = parsedCredentials.data;
+                const { email, password } = parsedCredentials.data
 
                 try {
-                    const user = await prisma.user.findUnique({ where: { email } });
+                    const user = await prisma.user.findUnique({ where: { email } })
                     if (!user) {
-                        console.warn("User not found for email:", email);
-                        return null;
+                        console.warn("User not found for email:", email)
+                        return null
                     }
 
-                    const isPasswordValid = await verifyPassword(password, user.password);
+                    const isPasswordValid = await verifyPassword(password, user.password)
                     if (!isPasswordValid) {
-                        console.warn("Invalid password for email:", email);
-                        return null;
+                        console.warn("Invalid password for email:", email)
+                        return null
                     }
 
                     return {
@@ -68,10 +68,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         email: user.email,
                         name: user.name,
                         role: user.role
-                    };
+                    }
                 } catch (error) {
-                    console.error("Error during authentication:", error);
-                    return null;
+                    console.error("Error during authentication:", error)
+                    return null
                 }
             },
         }),

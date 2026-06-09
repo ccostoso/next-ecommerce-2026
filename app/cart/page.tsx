@@ -1,30 +1,30 @@
-import CartEntry from "@/components/CartEntry";
-import CartSummary from "@/components/CartSummary";
-import { Button } from "@/components/ui/button";
-import { getCheckoutCart } from "@/lib/actions/cart-actions";
-import { processCheckout } from "@/lib/orders";
-import { sleep } from "@/lib/utils";
-import { redirect } from "next/navigation";
+import CartEntry from "@/components/CartEntry"
+import CartSummary from "@/components/CartSummary"
+import { Button } from "@/components/ui/button"
+import { getCheckoutCart } from "@/lib/actions/cart-actions"
+import { processCheckout } from "@/lib/orders"
+import { sleep } from "@/lib/utils"
+import { redirect } from "next/navigation"
 
 export default async function CartPage() {
-    const cart = await getCheckoutCart();
+    const cart = await getCheckoutCart()
 
     const handleCheckout = async () => {
-        "use server";
+        "use server"
 
-        let sessionUrl: string;
+        let sessionUrl: string
 
         try {
-            ({ sessionUrl } = await processCheckout());
+            ({ sessionUrl } = await processCheckout())
         } catch (error) {
-            console.error("Checkout failed:", error);
-            throw error;
+            console.error("Checkout failed:", error)
+            throw error
         }
 
-        redirect(sessionUrl);
-    };
+        redirect(sessionUrl)
+    }
 
-    await sleep(1500);
+    await sleep(1500)
 
     return (
         <main className="container mx-auto p-4">
@@ -54,5 +54,5 @@ export default async function CartPage() {
                 </div>
             )}
         </main>
-    );
+    )
 }

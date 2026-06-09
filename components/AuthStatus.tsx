@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { signOut, useSession } from "next-auth/react";
-import { Skeleton } from "./ui/skeleton";
-import { Button } from "./ui/button";
-import { LogIn, LogOut, User } from "lucide-react";
-import Link from "next/link";
+import { signOut, useSession } from "next-auth/react"
+import { Skeleton } from "./ui/skeleton"
+import { Button } from "./ui/button"
+import { LogIn, LogOut, User } from "lucide-react"
+import Link from "next/link"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,14 +12,14 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator,
     DropdownMenuLabel,
-} from "./ui/dropdown-menu";
+} from "./ui/dropdown-menu"
 
 export default function AuthStatus() {
-    const { status, data: session } = useSession();
+    const { status, data: session } = useSession()
 
     switch (status) {
         case "loading":
-            return <Skeleton className="w-9 h-9"></Skeleton>;
+            return <Skeleton className="w-9 h-9"></Skeleton>
         case "unauthenticated":
             return (
                 <Button variant="outline" size="icon" asChild>
@@ -27,7 +27,7 @@ export default function AuthStatus() {
                         <LogIn className="h-5 w-5" />
                     </Link>
                 </Button>
-            );
+            )
         default:
             // case "authenticated":
             return (
@@ -51,6 +51,6 @@ export default function AuthStatus() {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            );
+            )
     }
 }

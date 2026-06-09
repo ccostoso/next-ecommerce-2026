@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Controller } from "react-hook-form";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Controller } from "react-hook-form"
 import {
     Field,
     FieldError,
     FieldGroup,
     FieldLabel,
-} from "@/components/ui/field";
-import type { UseFormReturn, SubmitHandler } from "react-hook-form";
-import { LoginSchemaType } from "@/lib/schemas";
+} from "@/components/ui/field"
+import type { UseFormReturn, SubmitHandler } from "react-hook-form"
+import { LoginSchemaType } from "@/lib/schemas"
 
 type SignInFormProps = {
-    form: UseFormReturn<LoginSchemaType>; // Replace with the actual type from react-hook-form
-    onSubmit: SubmitHandler<LoginSchemaType>; // Replace with the actual data type
-    isLoading: boolean;
-};
+    form: UseFormReturn<LoginSchemaType> // Replace with the actual type from react-hook-form
+    onSubmit: SubmitHandler<LoginSchemaType> // Replace with the actual data type
+    isLoading: boolean
+}
 
 export default function SignInForm({
     form,
@@ -92,5 +92,5 @@ export default function SignInForm({
                 </Button>
             </FieldGroup>
         </form>
-    );
+    )
 }

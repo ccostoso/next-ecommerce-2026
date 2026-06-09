@@ -1,6 +1,6 @@
-import ProductCardSkeleton from "./ProductCardSkeleton";
+import ProductCardSkeleton from "./ProductCardSkeleton"
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 3
 
 export default function ProductsSkeleton() {
     return (
@@ -11,5 +11,5 @@ export default function ProductsSkeleton() {
                 ))}
             </div>
         </>
-    );
+    )
 }

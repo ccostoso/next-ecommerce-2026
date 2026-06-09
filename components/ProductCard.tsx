@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
     Card,
@@ -6,15 +6,15 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { Product } from "@/generated/prisma/client";
-import { formatPrice } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
+} from "@/components/ui/card"
+import { Product } from "@/generated/prisma/client"
+import { formatPrice } from "@/lib/utils"
+import Image from "next/image"
+import Link from "next/link"
 
 type ProductCardProps = {
-    product: Product;
-};
+    product: Product
+}
 
 export default function ProductCard({ product }: ProductCardProps) {
     return (
@@ -43,5 +43,5 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </CardFooter>
             </Card>
         </Link>
-    );
+    )
 }

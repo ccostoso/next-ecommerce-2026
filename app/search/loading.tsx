@@ -1,7 +1,7 @@
-import BreadcrumbsSkeleton from "../../components/skeletons/BreadcrumbsSkeleton";
-import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton";
-import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton";
-import { Skeleton } from "@/components/ui/skeleton";
+import BreadcrumbsSkeleton from "../../components/skeletons/BreadcrumbsSkeleton"
+import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton"
+import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Loading() {
     return (
@@ -23,5 +23,5 @@ export default function Loading() {
                 </div>
             </div>
         </main>
-    );
+    )
 }

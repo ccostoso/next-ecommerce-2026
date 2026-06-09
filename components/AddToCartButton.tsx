@@ -1,29 +1,29 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Product } from "@/generated/prisma/client";
-import { addToCart } from "@/lib/actions/cart-actions";
-import { ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { Button } from "@/components/ui/button"
+import { Product } from "@/generated/prisma/client"
+import { addToCart } from "@/lib/actions/cart-actions"
+import { ShoppingCart } from "lucide-react"
+import { useState } from "react"
 
 type AddToCartButtonProps = {
-    product: Product;
-};
+    product: Product
+}
 
 export function AddToCartButton({ product }: AddToCartButtonProps) {
-    const [isAdding, setIsAdding] = useState(false);
+    const [isAdding, setIsAdding] = useState(false)
 
     const handleAddToCart = async () => {
-        setIsAdding(true);
+        setIsAdding(true)
 
         try {
-            await addToCart(product.id, 1);
+            await addToCart(product.id, 1)
         } catch (error) {
-            console.error("Error adding product to cart:", error);
+            console.error("Error adding product to cart:", error)
         } finally {
-            setIsAdding(false);
+            setIsAdding(false)
         }
-    };
+    }
 
     return (
         <Button
@@ -35,5 +35,5 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
             <ShoppingCart className="mr-2" size={16} />
             {product.inventory > 0 ? "Add to cart" : "Out of stock"}
         </Button>
-    );
+    )
 }

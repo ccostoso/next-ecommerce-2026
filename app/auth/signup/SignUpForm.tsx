@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Controller } from "react-hook-form";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Controller } from "react-hook-form"
 import {
     Field,
     FieldError,
     FieldGroup,
     FieldLabel,
-} from "@/components/ui/field";
-import type { UseFormReturn, SubmitHandler } from "react-hook-form";
-import { RegistrationSchemaType } from "@/lib/schemas";
+} from "@/components/ui/field"
+import type { UseFormReturn, SubmitHandler } from "react-hook-form"
+import { RegistrationSchemaType } from "@/lib/schemas"
 
 type SignUpFormProps = {
-    form: UseFormReturn<RegistrationSchemaType>; // Replace with the actual type from react-hook-form
-    onSubmit: SubmitHandler<RegistrationSchemaType>; // Replace with the actual data type
-    isLoading: boolean;
-};
+    form: UseFormReturn<RegistrationSchemaType> // Replace with the actual type from react-hook-form
+    onSubmit: SubmitHandler<RegistrationSchemaType> // Replace with the actual data type
+    isLoading: boolean
+}
 
 export default function SignUpForm({
     form,
@@ -147,5 +147,5 @@ export default function SignUpForm({
                 </Button>
             </FieldGroup>
         </form>
-    );
+    )
 }

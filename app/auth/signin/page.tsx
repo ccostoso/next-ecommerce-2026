@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
     Card,
@@ -6,21 +6,21 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { LoginSchema, LoginSchemaType } from "@/lib/schemas";
-import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
-import SignInForm from "./SignInForm";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/card"
+import { LoginSchema, LoginSchemaType } from "@/lib/schemas"
+import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { signIn, useSession } from "next-auth/react"
+import { useState } from "react"
+import SignInForm from "./SignInForm"
+import { useRouter } from "next/navigation"
 
 export default function SignInPage() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const { update: updateSession } = useSession();
-    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const { update: updateSession } = useSession()
+    const router = useRouter()
 
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
@@ -28,10 +28,10 @@ export default function SignInPage() {
             email: "",
             password: "",
         },
-    });
+    })
 
     const onSubmit = async (data: LoginSchemaType) => {
-        setIsLoading(true);
+        setIsLoading(true)
 
         try {
             const result = await signIn("credentials", {
@@ -39,26 +39,26 @@ export default function SignInPage() {
                 password: data.password,
                 redirect: false,
                 callbackUrl: "/",
-            });
+            })
 
             if (result?.error) {
-                console.log("Sign-in error:", result.error);
+                console.log("Sign-in error:", result.error)
                 if (result.error === "CredentialsSignin") {
-                    setError("Invalid email or password.");
+                    setError("Invalid email or password.")
                 } else {
-                    setError("An unexpected error occurred. Please try again.");
+                    setError("An unexpected error occurred. Please try again.")
                 }
             } else {
-                setError(null);
-                await updateSession();
-                router.push("/");
+                setError(null)
+                await updateSession()
+                router.push("/")
             }
         } catch (error) {
-            setError("An unexpected error occurred. Please try again.");
+            setError("An unexpected error occurred. Please try again.")
         }
 
-        setIsLoading(false);
-    };
+        setIsLoading(false)
+    }
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -93,5 +93,5 @@ export default function SignInPage() {
                 </CardFooter>
             </Card>
         </main>
-    );
+    )
 }

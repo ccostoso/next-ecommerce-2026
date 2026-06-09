@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
     Card,
@@ -6,19 +6,19 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { RegistrationSchema, RegistrationSchemaType } from "@/lib/schemas";
-import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import SignUpForm from "./SignUpForm";
-import { registerUser } from "@/lib/actions/auth-actions";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/card"
+import { RegistrationSchema, RegistrationSchemaType } from "@/lib/schemas"
+import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import SignUpForm from "./SignUpForm"
+import { registerUser } from "@/lib/actions/auth-actions"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function SignUpPage() {
-    const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    const [error, setError] = useState<string | null>(null)
+    const router = useRouter()
     const form = useForm<RegistrationSchemaType>({
         resolver: zodResolver(RegistrationSchema),
         defaultValues: {
@@ -27,28 +27,28 @@ export default function SignUpPage() {
             password: "",
             confirmPassword: "",
         },
-    });
+    })
 
     const onSubmit = async (data: RegistrationSchemaType) => {
-        form.clearErrors();
+        form.clearErrors()
 
         try {
-            const result = await registerUser(data);
+            const result = await registerUser(data)
 
             if (!result?.success) {
                 setError(
                     result?.error ||
                         "An unexpected error occurred. Please try again.",
-                );
-                return;
+                )
+                return
             }
 
-            router.push("/auth/signin");
+            router.push("/auth/signin")
         } catch (error) {
-            console.error(error);
-            setError("An unexpected error occurred. Please try again.");
+            console.error(error)
+            setError("An unexpected error occurred. Please try again.")
         }
-    };
+    }
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -83,5 +83,5 @@ export default function SignUpPage() {
                 </CardFooter>
             </Card>
         </main>
-    );
+    )
 }

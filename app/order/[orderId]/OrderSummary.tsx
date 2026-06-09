@@ -1,10 +1,10 @@
-import OrderStatusBadge from "@/components/OrderStatusBadge";
-import { OrderWithItemsAndProducts } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import OrderStatusBadge from "@/components/OrderStatusBadge"
+import { OrderWithItemsAndProducts } from "@/lib/types"
+import { formatPrice } from "@/lib/utils"
 
 type CartSummaryProps = {
-    order: OrderWithItemsAndProducts;
-};
+    order: OrderWithItemsAndProducts
+}
 
 export default async function CartSummary({ order }: CartSummaryProps) {
     return (
@@ -40,5 +40,5 @@ export default async function CartSummary({ order }: CartSummaryProps) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

@@ -1,16 +1,16 @@
-import { prisma } from "@/lib/prisma-server";
-import { notFound } from "next/navigation";
-import OrderItem from "./OrderItem";
-import OrderSummary from "./OrderSummary";
+import { prisma } from "@/lib/prisma-server"
+import { notFound } from "next/navigation"
+import OrderItem from "./OrderItem"
+import OrderSummary from "./OrderSummary"
 
 type OrderPageProps = {
     params: Promise<{
-        orderId: string;
-    }>;
-};
+        orderId: string
+    }>
+}
 
 export default async function OrderPage({ params }: OrderPageProps) {
-    const { orderId } = await params;
+    const { orderId } = await params
 
     const order = await prisma.order.findUnique({
         where: { id: orderId },
@@ -21,10 +21,10 @@ export default async function OrderPage({ params }: OrderPageProps) {
                 },
             },
         },
-    });
+    })
 
     if (!order) {
-        notFound();
+        notFound()
     }
 
     return (
@@ -36,5 +36,5 @@ export default async function OrderPage({ params }: OrderPageProps) {
             </ul>
             <OrderSummary order={order} />
         </div>
-    );
+    )
 }

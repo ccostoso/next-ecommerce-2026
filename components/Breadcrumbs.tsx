@@ -1,16 +1,16 @@
-import { Home } from "lucide-react";
+import { Home } from "lucide-react"
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbSeparator,
-} from "./ui/breadcrumb";
-import React from "react";
+} from "./ui/breadcrumb"
+import React from "react"
 
 type BreadcrumbsProps = {
-    items: { label: string; href: string; active?: boolean }[];
-};
+    items: { label: string, href: string, active?: boolean }[]
+}
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
     return (
@@ -37,5 +37,5 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
                 ))}
             </BreadcrumbList>
         </Breadcrumb>
-    );
+    )
 }
