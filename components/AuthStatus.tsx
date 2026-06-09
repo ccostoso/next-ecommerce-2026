@@ -39,10 +39,10 @@ export default function AuthStatus() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>
-                            {session?.user?.name ?? "Account"}
+                            {session?.user?.name ?? "User"}
                         </DropdownMenuLabel>
                         <DropdownMenuItem asChild>
-                            <Link href="/account">Profile</Link>
+                            <Link href="/account">My Account</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => signOut()}>
