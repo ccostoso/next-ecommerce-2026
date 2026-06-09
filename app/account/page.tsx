@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { getOrdersByUserId } from "@/lib/actions/order-actions"
 import { auth } from "@/lib/auth"
+import { formatPrice } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -46,14 +47,17 @@ export default async function AccountPage() {
                     ) : (
                         orders.map((order) => (
                             <TableRow key={order.id}>
-                                <TableCell>{order.id}</TableCell>
+                                {/* Only show first four and last eight digits of order ID */}
                                 <TableCell>
-                                    ${(order.total / 100).toFixed(2)}
+                                    {`${order.id.slice(0, 4)}...${order.id.slice(-8)}`}
                                 </TableCell>
                                 <TableCell>
                                     {new Date(
                                         order.createdAt,
                                     ).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    {formatPrice(order.total)}
                                 </TableCell>
                                 <TableCell>
                                     <OrderStatusBadge status={order.status} />
