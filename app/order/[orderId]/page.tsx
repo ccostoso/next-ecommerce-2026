@@ -1,16 +1,18 @@
-import { prisma } from "@/lib/prisma-server";
-import { notFound } from "next/navigation";
-import OrderItem from "./OrderItem";
-import OrderSummary from "./OrderSummary";
+import { prisma } from "@/lib/prisma-server"
+import { notFound } from "next/navigation"
+import OrderItem from "./OrderItem"
+import OrderSummary from "./OrderSummary"
+import { auth } from "@/lib/auth"
+import Breadcrumbs from "@/components/Breadcrumbs"
 
 type OrderPageProps = {
     params: Promise<{
-        orderId: string;
-    }>;
-};
+        orderId: string
+    }>
+}
 
 export default async function OrderPage({ params }: OrderPageProps) {
-    const { orderId } = await params;
+    const { orderId } = await params
 
     const order = await prisma.order.findUnique({
         where: { id: orderId },
@@ -21,20 +23,35 @@ export default async function OrderPage({ params }: OrderPageProps) {
                 },
             },
         },
-    });
+    })
 
     if (!order) {
-        notFound();
+        notFound()
     }
 
+    const session = await auth()
+    const isOwner = session?.user?.id === order.userId
+
     return (
-        <div className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8">
+            {isOwner && (
+                <Breadcrumbs
+                    items={[
+                        { label: "Account", href: "/account" },
+                        {
+                            label: `Order`,
+                            href: `/order/${order.id}`,
+                            active: true,
+                        },
+                    ]}
+                />
+            )}
             <ul>
                 {order?.orderItems.map((item) => (
                     <OrderItem key={item.id} orderItem={item} />
                 ))}
             </ul>
             <OrderSummary order={order} />
-        </div>
-    );
+        </main>
+    )
 }

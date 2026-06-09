@@ -1,19 +1,19 @@
-import { getCheckoutCart } from "@/lib/actions/cart-actions";
-import { formatPrice } from "@/lib/utils";
+import { getCheckoutCart } from "@/lib/actions/cart-actions"
+import { formatPrice } from "@/lib/utils"
 
 export default async function CartSummary() {
     // Retrieve the cart items and calculate the subtotal, taxes, shipping, and total price
-    const cartItems = await getCheckoutCart();
+    const cartItems = await getCheckoutCart()
 
-    if (!cartItems || cartItems.items.length === 0) return null;
+    if (!cartItems || cartItems.items.length === 0) return null
 
     const subtotal = cartItems?.items.reduce((total, item) => {
-        return total + item.product.price * item.quantity;
-    }, 0);
+        return total + item.product.price * item.quantity
+    }, 0)
 
-    const taxes = 0; // Assuming a fixed tax rate of 10%
-    const shipping = 0; // Flat shipping rate
-    const totalPrice = subtotal + taxes + shipping;
+    const taxes = 0 // Assuming a fixed tax rate of 10%
+    const shipping = 0 // Flat shipping rate
+    const totalPrice = subtotal + taxes + shipping
 
     return (
         <div className="flex flex-col p-4 mt-4 border rounded-md">
@@ -43,5 +43,5 @@ export default async function CartSummary() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

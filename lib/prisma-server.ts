@@ -1,3 +1,3 @@
-import "server-only";
+import "server-only"
 
-export { prisma } from "./prisma";
+export { prisma } from "./prisma"

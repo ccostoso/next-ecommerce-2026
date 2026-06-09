@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Menu } from "lucide-react";
+import { Menu } from "lucide-react"
 import {
     Sheet,
     SheetClose,
@@ -8,10 +8,10 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from "./ui/sheet";
-import { Button } from "./ui/button";
-import Link from "next/link";
-import { categories } from "../lib/categories";
+} from "./ui/sheet"
+import { Button } from "./ui/button"
+import Link from "next/link"
+import { categories } from "../lib/categories"
 
 export default function MobileNav() {
     return (
@@ -59,5 +59,5 @@ export default function MobileNav() {
                 </nav>
             </SheetContent>
         </Sheet>
-    );
+    )
 }

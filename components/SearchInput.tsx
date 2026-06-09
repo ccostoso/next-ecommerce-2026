@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
-import { Search } from "lucide-react";
-import { Input } from "./ui/input";
+import { Search } from "lucide-react"
+import { Input } from "./ui/input"
 import {
     useRouter,
     useSearchParams,
-} from "next/dist/client/components/navigation";
-import { useState } from "react";
+} from "next/dist/client/components/navigation"
+import { useState } from "react"
 
 export default function SearchInput() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const initialQuery = searchParams.get("q") || "";
-    const [query, setQuery] = useState(initialQuery);
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const initialQuery = searchParams.get("q") || ""
+    const [query, setQuery] = useState(initialQuery)
 
     const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        const trimmedQuery = query.trim();
-        const params = new URLSearchParams();
+        e.preventDefault()
+        const trimmedQuery = query.trim()
+        const params = new URLSearchParams()
 
         if (trimmedQuery) {
-            params.set("q", trimmedQuery);
-            router.push(`/search?${params.toString()}`);
+            params.set("q", trimmedQuery)
+            router.push(`/search?${params.toString()}`)
         } else {
-            router.push(`/search`);
+            router.push(`/search`)
         }
-    };
+    }
 
     return (
         <form className="relative w-full" onSubmit={handleSearch}>
@@ -39,5 +39,5 @@ export default function SearchInput() {
                 key={searchParams.get("q") || ""}
             />
         </form>
-    );
+    )
 }

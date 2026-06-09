@@ -1,33 +1,33 @@
-"use client";
+"use client"
 
-import { CartItemWithProduct } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
-import Image from "next/image";
-import { Button } from "./ui/button";
-import { Minus, Plus, X } from "lucide-react";
-import { useState } from "react";
-import { setCartItemQuantity } from "@/lib/actions/cart-actions";
+import { CartItemWithProduct } from "@/lib/types"
+import { formatPrice } from "@/lib/utils"
+import Image from "next/image"
+import { Button } from "./ui/button"
+import { Minus, Plus, X } from "lucide-react"
+import { useState } from "react"
+import { setCartItemQuantity } from "@/lib/actions/cart-actions"
 
 type CartEntryProps = {
-    cartItem: CartItemWithProduct;
-};
+    cartItem: CartItemWithProduct
+}
 
 export default function CartEntry({ cartItem }: CartEntryProps) {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleSetCartItemQuantity = async (delta: number) => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
             await setCartItemQuantity(
                 cartItem.product.id,
                 cartItem.quantity + delta,
-            );
+            )
         } catch (error) {
-            console.error("Failed to update cart item quantity:", error);
+            console.error("Failed to update cart item quantity:", error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     return (
         <div className="border-b border-muted last:border-b-0 flex py-4 justify-between">
@@ -93,5 +93,5 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

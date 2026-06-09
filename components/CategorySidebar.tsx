@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { Layers } from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { cn } from "@/lib/utils"
+import { Layers } from "lucide-react"
+import Link from "next/link"
+import { useParams } from "next/navigation"
 
 type CategorySidebarProps = {
     categories?: {
-        name: string;
-        slug: string;
-    }[];
-};
+        name: string
+        slug: string
+    }[]
+}
 
 export default function CategorySidebar({
     categories = [],
 }: CategorySidebarProps) {
     // Get the slug property from the URL parameters and rename it to activeCategory
-    const { slug: activeCategory } = useParams<{ slug?: string }>();
+    const { slug: activeCategory } = useParams<{ slug?: string }>()
 
     return (
         <div className="w-full p-4 h-full">
@@ -46,5 +46,5 @@ export default function CategorySidebar({
                 </ul>
             </div>
         </div>
-    );
+    )
 }

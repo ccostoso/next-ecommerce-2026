@@ -1,25 +1,25 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { getProductBySlug } from "@/lib/actions/product-actions";
-import { formatPrice, sleep } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { notFound } from "next/navigation";
-import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { AddToCartButton } from "@/components/AddToCartButton";
+import { Card, CardContent } from "@/components/ui/card"
+import { getProductBySlug } from "@/lib/actions/product-actions"
+import { formatPrice, sleep } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { notFound } from "next/navigation"
+import { Separator } from "@/components/ui/separator"
+import Image from "next/image"
+import Breadcrumbs from "@/components/Breadcrumbs"
+import { AddToCartButton } from "@/components/AddToCartButton"
 
 type ProductPageProps = {
-    params: Promise<{ slug: string }>;
-};
+    params: Promise<{ slug: string }>
+}
 
 export async function generateMetadata({ params }: ProductPageProps) {
-    const { slug } = await params;
-    const product = await getProductBySlug(slug);
+    const { slug } = await params
+    const product = await getProductBySlug(slug)
 
     if (!product) {
         return {
             title: "Product Not Found",
-        };
+        }
     }
 
     return {
@@ -39,14 +39,14 @@ export async function generateMetadata({ params }: ProductPageProps) {
                   ]
                 : undefined,
         },
-    };
+    }
 }
 
 export default async function ProductPage(props: ProductPageProps) {
-    const { slug } = await props.params;
-    const product = await getProductBySlug(slug);
+    const { slug } = await props.params
+    const product = await getProductBySlug(slug)
 
-    if (!product) notFound();
+    if (!product) notFound()
 
     const breadcrumbItems = [
         { label: "Products", href: "/" },
@@ -55,9 +55,9 @@ export default async function ProductPage(props: ProductPageProps) {
             href: `/search/${product.category?.slug}`,
         },
         { label: product.name, href: `/product/${product.slug}`, active: true },
-    ];
+    ]
 
-    await sleep(1000);
+    await sleep(1000)
 
     return (
         <main className="container mx-auto p-4">
@@ -136,5 +136,5 @@ export default async function ProductPage(props: ProductPageProps) {
                 </CardContent>
             </Card>
         </main>
-    );
+    )
 }

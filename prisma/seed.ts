@@ -1,36 +1,36 @@
-import { Prisma } from "@/generated/prisma/client";
-import { prisma } from "../lib/prisma";
-import { hashPassword } from "@/lib/auth";
+import { Prisma } from "@/generated/prisma/client"
+import { prisma } from "../lib/prisma"
+import { hashPassword } from "@/lib/passwords"
 
 async function main() {
-    await prisma.orderItem.deleteMany();
-    await prisma.cartItem.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.cart.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.category.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.orderItem.deleteMany()
+    await prisma.cartItem.deleteMany()
+    await prisma.order.deleteMany()
+    await prisma.cart.deleteMany()
+    await prisma.product.deleteMany()
+    await prisma.category.deleteMany()
+    await prisma.user.deleteMany()
 
     const electronics = await prisma.category.create({
         data: {
             name: "Electronics",
             slug: "electronics",
         },
-    });
+    })
 
     const clothing = await prisma.category.create({
         data: {
             name: "Clothing",
             slug: "clothing",
         },
-    });
+    })
 
     const home = await prisma.category.create({
         data: {
             name: "Home",
             slug: "home",
         },
-    });
+    })
 
     const products = [
         {
@@ -80,15 +80,15 @@ async function main() {
             slug: "leather-backpack",
             inventory: 12,
         },
-    ] satisfies Prisma.ProductCreateInput[];
+    ] satisfies Prisma.ProductCreateInput[]
 
     for (const product of products) {
         await prisma.product.create({
             data: product,
-        });
+        })
     }
 
-    console.log("Products and categories created!");
+    console.log("Products and categories created!")
 
     const users = [
         {
@@ -103,24 +103,24 @@ async function main() {
             password: "admin12#",
             role: "admin",
         },
-    ] satisfies Prisma.UserCreateInput[];
+    ] satisfies Prisma.UserCreateInput[]
 
     for (const user of users) {
         await prisma.user.create({
             data: { ...user, password: await hashPassword(user.password) }
-        });
+        })
     }
 
-    console.log("Users created!");
+    console.log("Users created!")
 }
 
 main()
     .then(async () => {
-        console.log('Seeding complete!');
-        await prisma.$disconnect();
+        console.log('Seeding complete!')
+        await prisma.$disconnect()
     })
     .catch(async (e) => {
-        console.error(e);
-        await prisma.$disconnect();
-        process.exit(1);
-    });
+        console.error(e)
+        await prisma.$disconnect()
+        process.exit(1)
+    })

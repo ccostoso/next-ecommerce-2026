@@ -1,9 +1,9 @@
-import { Product } from "@/generated/prisma/client";
-import ProductCard from "./ProductCard";
+import { Product } from "@/generated/prisma/client"
+import ProductCard from "./ProductCard"
 
 type ProductsListProps = {
-    products: Product[];
-};
+    products: Product[]
+}
 
 export default function ProductList({ products }: ProductsListProps) {
     if (products.length === 0) {
@@ -11,7 +11,7 @@ export default function ProductList({ products }: ProductsListProps) {
             <p className="text-center text-muted-foreground">
                 No results found.
             </p>
-        );
+        )
     }
 
     return (
@@ -22,5 +22,5 @@ export default function ProductList({ products }: ProductsListProps) {
                 ))}
             </div>
         </>
-    );
+    )
 }

@@ -1,17 +1,17 @@
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { Suspense } from "react";
-import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton";
-import ProductListData from "@/components/ProductListData";
+import Breadcrumbs from "@/components/Breadcrumbs"
+import { Suspense } from "react"
+import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton"
+import ProductListData from "@/components/ProductListData"
 
 type SearchPageProps = {
     searchParams: Promise<{
-        q?: string;
-        sort?: string;
-    }>;
-};
+        q?: string
+        sort?: string
+    }>
+}
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-    const { q, sort } = await searchParams;
+    const { q, sort } = await searchParams
 
     const breadcrumbItems = [
         { label: "Products", href: "/" },
@@ -19,7 +19,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             label: `${q ? `Results for "${q}"` : "No query"}`,
             href: `/search${q ? `?q=${q}` : ""}${sort ? `&sort=${sort}` : ""}`,
         },
-    ];
+    ]
 
     return (
         <>
@@ -30,5 +30,5 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 />
             </Suspense>
         </>
-    );
+    )
 }

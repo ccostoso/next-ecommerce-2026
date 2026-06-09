@@ -1,5 +1,5 @@
-import BreadcrumbsSkeleton from "../components/skeletons/BreadcrumbsSkeleton";
-import ProductsSkeleton from "../components/skeletons/ProductsSkeleton";
+import BreadcrumbsSkeleton from "../components/skeletons/BreadcrumbsSkeleton"
+import ProductsSkeleton from "../components/skeletons/ProductsSkeleton"
 
 export default function Loading() {
     return (
@@ -7,5 +7,5 @@ export default function Loading() {
             <BreadcrumbsSkeleton />
             <ProductsSkeleton />
         </div>
-    );
+    )
 }

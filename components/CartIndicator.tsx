@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { ShoppingCart } from "lucide-react";
-import { getCheckoutCart } from "@/lib/actions/cart-actions";
+import Link from "next/link"
+import { Button } from "./ui/button"
+import { ShoppingCart } from "lucide-react"
+import { getCheckoutCart } from "@/lib/actions/cart-actions"
 
 export default async function CartIndicator() {
-    const cart = await getCheckoutCart();
-    const size = cart?.size || 0;
+    const cart = await getCheckoutCart()
+    const size = cart?.size || 0
 
     return (
         <Button variant="outline" className="relative" size="icon" asChild>
@@ -18,5 +18,5 @@ export default async function CartIndicator() {
                 )}
             </Link>
         </Button>
-    );
+    )
 }

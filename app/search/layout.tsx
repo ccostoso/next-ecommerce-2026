@@ -1,8 +1,8 @@
-import { Suspense } from "react";
-import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton";
-import CategorySidebar from "@/components/CategorySidebar";
-import { prisma } from "@/lib/prisma-server";
-import SortingControls from "@/components/SortingControls";
+import { Suspense } from "react"
+import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton"
+import CategorySidebar from "@/components/CategorySidebar"
+import { prisma } from "@/lib/prisma-server"
+import SortingControls from "@/components/SortingControls"
 
 async function CategorySidebarData() {
     const categories = await prisma.category.findMany({
@@ -13,15 +13,15 @@ async function CategorySidebarData() {
         orderBy: {
             name: "asc",
         },
-    });
+    })
 
-    return <CategorySidebar categories={categories} />;
+    return <CategorySidebar categories={categories} />
 }
 
 export default function SearchLayout({
     children,
 }: {
-    children: React.ReactNode;
+    children: React.ReactNode
 }) {
     return (
         <main className="container mx-auto p-4">
@@ -37,5 +37,5 @@ export default function SearchLayout({
                 </div>
             </div>
         </main>
-    );
+    )
 }
