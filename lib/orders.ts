@@ -33,7 +33,7 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
             const newOrder = await tx.order.create({
                 data: {
                     total,
-                    userId: userId || null
+                    user: userId ? { connect: { id: userId } } : undefined,
                 }
             })
 
