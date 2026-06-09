@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { getProductBySlug } from "@/lib/actions/product-actions"
-import { formatPrice, sleep } from "@/lib/utils"
+import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
@@ -56,8 +56,6 @@ export default async function ProductPage(props: ProductPageProps) {
         },
         { label: product.name, href: `/product/${product.slug}`, active: true },
     ]
-
-    await sleep(1000)
 
     return (
         <main className="container mx-auto p-4">

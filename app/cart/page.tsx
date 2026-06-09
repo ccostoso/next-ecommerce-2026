@@ -3,7 +3,7 @@ import CartSummary from "@/components/CartSummary"
 import { Button } from "@/components/ui/button"
 import { getCheckoutCart } from "@/lib/actions/cart-actions"
 import { processCheckout } from "@/lib/orders"
-import { sleep } from "@/lib/utils"
+import { ProcessCheckoutResult } from "@/lib/types"
 import { redirect } from "next/navigation"
 
 export default async function CartPage() {
@@ -12,19 +12,17 @@ export default async function CartPage() {
     const handleCheckout = async () => {
         "use server"
 
-        let sessionUrl: string
+        let result: ProcessCheckoutResult
 
         try {
-            ({ sessionUrl } = await processCheckout())
+            result = await processCheckout()
         } catch (error) {
             console.error("Checkout failed:", error)
             throw error
         }
 
-        redirect(sessionUrl)
+        redirect(result.sessionUrl)
     }
-
-    await sleep(1500)
 
     return (
         <main className="container mx-auto p-4">
