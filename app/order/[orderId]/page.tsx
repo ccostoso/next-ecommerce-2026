@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/prisma-server"
 import { notFound } from "next/navigation"
 import OrderItem from "./OrderItem"
 import OrderSummary from "./OrderSummary"
 import { auth } from "@/lib/auth"
 import Breadcrumbs from "@/components/Breadcrumbs"
+import { getOrderById } from "@/lib/actions/order-actions"
 
 type OrderPageProps = {
     params: Promise<{
@@ -14,16 +14,7 @@ type OrderPageProps = {
 export default async function OrderPage({ params }: OrderPageProps) {
     const { orderId } = await params
 
-    const order = await prisma.order.findUnique({
-        where: { id: orderId },
-        include: {
-            orderItems: {
-                include: {
-                    product: true,
-                },
-            },
-        },
-    })
+    const order = await getOrderById(orderId)
 
     if (!order) {
         notFound()

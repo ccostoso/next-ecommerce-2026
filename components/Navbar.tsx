@@ -9,8 +9,9 @@ import CartIndicator from "./CartIndicator"
 import { Suspense } from "react"
 import CartIndicatorSkeleton from "./skeletons/CartIndicatorSkeleton"
 import AuthStatus from "./AuthStatus"
+import { Skeleton } from "./ui/skeleton"
 
-export default function Navbar() {
+export default async function Navbar() {
     return (
         <div className="border-b border-dashed px-4">
             <div className="container mx-auto flex h-16 justify-between items-center xl:px-4">
@@ -38,7 +39,13 @@ export default function Navbar() {
                 </div>
 
                 <div className="block w-full mx-4 md:mx-8">
-                    <SearchInput />
+                    <Suspense
+                        fallback={
+                            <Skeleton className="h-10 bg-muted rounded animate-pulse" />
+                        }
+                    >
+                        <SearchInput />
+                    </Suspense>
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-4">

@@ -42,7 +42,6 @@ export default function SignInPage() {
             })
 
             if (result?.error) {
-                console.log("Sign-in error:", result.error)
                 if (result.error === "CredentialsSignin") {
                     setError("Invalid email or password.")
                 } else {

@@ -1,13 +1,28 @@
 import Breadcrumbs from "@/components/Breadcrumbs"
-import { prisma } from "@/lib/prisma-server"
 import { Suspense } from "react"
 import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton"
 import { notFound } from "next/navigation"
 import ProductListData from "@/components/ProductListData"
+import { getCategoryBySlug } from "@/lib/actions/category-actions"
 
 type CategoryPageProps = {
     params: Promise<{ slug: string }>
     searchParams: Promise<{ sort?: string }>
+}
+
+export async function generateMetadata({ params }: CategoryPageProps) {
+    const { slug } = await params
+    const category = await getCategoryBySlug(slug)
+
+    if (!category) return {}
+
+    return {
+        title: `Next Commerce - ${category.name}`,
+        openGraph: {
+            title: `Next Commerce - ${category.name}`,
+            description: `Browse products in the ${category.name} category on Next Commerce.`,
+        },
+    }
 }
 
 export default async function CategoryPage({
@@ -17,14 +32,9 @@ export default async function CategoryPage({
     const { slug } = await params
     const { sort } = await searchParams
 
-    const category = await prisma.category.findUnique({
-        where: {
-            slug,
-        },
-        select: {
-            name: true,
-            slug: true,
-        },
+    const category = await getCategoryBySlug(slug, {
+        name: true,
+        slug: true,
     })
 
     if (!category) notFound()

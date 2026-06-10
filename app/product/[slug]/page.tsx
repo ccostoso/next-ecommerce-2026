@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { getProductBySlug } from "@/lib/actions/product-actions"
-import { formatPrice, sleep } from "@/lib/utils"
+import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
@@ -10,6 +10,7 @@ import { AddToCartButton } from "@/components/AddToCartButton"
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>
+    searchParams: Promise<{ error?: string | undefined }>
 }
 
 export async function generateMetadata({ params }: ProductPageProps) {
@@ -42,11 +43,37 @@ export async function generateMetadata({ params }: ProductPageProps) {
     }
 }
 
-export default async function ProductPage(props: ProductPageProps) {
-    const { slug } = await props.params
+export default async function ProductPage({
+    params,
+    searchParams,
+}: ProductPageProps) {
+    const { slug } = await params
     const product = await getProductBySlug(slug)
+    const { error } = (await searchParams) || {}
 
     if (!product) notFound()
+
+    if (error === "true") {
+        throw new Error("Random error for testing error handling")
+    }
+
+    const jsonLd = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: product.name,
+        image: product.image,
+        description: product.description,
+        sku: product.id,
+        offers: {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: formatPrice(product.price),
+            availability:
+                product.inventory > 0
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+        },
+    }
 
     const breadcrumbItems = [
         { label: "Products", href: "/" },
@@ -56,8 +83,6 @@ export default async function ProductPage(props: ProductPageProps) {
         },
         { label: product.name, href: `/product/${product.slug}`, active: true },
     ]
-
-    await sleep(1000)
 
     return (
         <main className="container mx-auto p-4">
@@ -135,6 +160,11 @@ export default async function ProductPage(props: ProductPageProps) {
                     </div>
                 </CardContent>
             </Card>
+            {/* dangerouslySetInnerHTML will be fine as the content is generated from trusted data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
         </main>
     )
 }
