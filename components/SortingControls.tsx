@@ -9,7 +9,6 @@ export default function SortingControls() {
     // Get the current search parameters from the URL
     const searchParams = useSearchParams()
     const currentSort = searchParams.get("sort") || undefined
-    console.log("Current search parameters:", searchParams.toString())
 
     // Function to create a URL with the selected sort option
     const createSortURL = (sortOption: string | null) => {

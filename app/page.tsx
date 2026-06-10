@@ -10,7 +10,6 @@ import { Suspense } from "react"
 import ProductsSkeleton from "../components/skeletons/ProductsSkeleton"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import ProductListData from "@/components/ProductListData"
-import { stripe } from "@/lib/stripe"
 import { getProductCount } from "@/lib/actions/product-actions"
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -24,8 +23,6 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 
     // Calculate total pages based on total products and page size
     const totalPages = Math.ceil(total / PAGE_SIZE)
-
-    console.log(await stripe.events.list({ limit: 1 }))
 
     return (
         <main className="container mx-auto p-4 flex-1">

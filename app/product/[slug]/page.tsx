@@ -50,8 +50,6 @@ export default async function ProductPage({
     const { slug } = await params
     const product = await getProductBySlug(slug)
     const { error } = (await searchParams) || {}
-    console.log("====")
-    console.log("ProductPage error:", await error)
 
     if (!product) notFound()
 
