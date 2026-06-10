@@ -7,7 +7,6 @@ import { categories } from "../lib/categories"
 import SearchInput from "./SearchInput"
 import CartIndicator from "./CartIndicator"
 import { Suspense } from "react"
-import CartIndicatorSkeleton from "./skeletons/CartIndicatorSkeleton"
 import AuthStatus from "./AuthStatus"
 import { Skeleton } from "./ui/skeleton"
 
@@ -55,9 +54,9 @@ export default async function Navbar() {
                         </Link>
                     </Button>
                     <AuthStatus />
-                    <Suspense fallback={<CartIndicatorSkeleton />}>
-                        <CartIndicator />
-                    </Suspense>
+
+                    <CartIndicator />
+
                     <ModeToggle />
                 </div>
             </div>

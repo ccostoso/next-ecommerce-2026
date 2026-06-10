@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { getProductBySlug } from "@/lib/actions/product-actions"
+import { getAllProducts, getProductBySlug } from "@/lib/actions/product-actions"
 import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
@@ -42,11 +42,20 @@ export async function generateMetadata({ params }: ProductPageProps) {
     }
 }
 
+export const revalidate = 15
+
+export async function generateStaticParams() {
+    const products = await getAllProducts({ slug: true })
+    return products.map((product) => ({ slug: product.slug }))
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
     const { slug } = await params
     const product = await getProductBySlug(slug)
 
     if (!product) notFound()
+
+    console.log(`Fetching product ${slug}`) // Debugging log to check product data
 
     const jsonLd = {
         "@context": "https://schema.org/",
