@@ -7,6 +7,8 @@ import { Button } from "./ui/button"
 import { Minus, Plus, X } from "lucide-react"
 import { useState } from "react"
 import { setCartItemQuantity } from "@/lib/actions/cart-actions"
+import { useCart } from "@/lib/use-cart"
+import Link from "next/link"
 
 type CartEntryProps = {
     cartItem: CartItemWithProduct
@@ -14,6 +16,7 @@ type CartEntryProps = {
 
 export default function CartEntry({ cartItem }: CartEntryProps) {
     const [isLoading, setIsLoading] = useState(false)
+    const { revalidateCart } = useCart() // Get the revalidateCart function from the useCart hook
 
     const handleSetCartItemQuantity = async (delta: number) => {
         setIsLoading(true)
@@ -22,6 +25,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                 cartItem.product.id,
                 cartItem.quantity + delta,
             )
+            revalidateCart() // Revalidate the cart data after updating the item quantity
         } catch (error) {
             console.error("Failed to update cart item quantity:", error)
         } finally {
@@ -61,7 +65,14 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
                     )}
                 </div>
                 <div className="flex flex-col">
-                    <h2 className="font-medium">{cartItem.product.name}</h2>
+                    <h2 className="font-medium">
+                        <Link
+                            href={`/product/${cartItem.product.slug}`}
+                            className="hover:underline"
+                        >
+                            {cartItem.product.name}
+                        </Link>
+                    </h2>
                 </div>
             </div>
 

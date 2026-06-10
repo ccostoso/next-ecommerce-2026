@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Product } from "@/generated/prisma/client"
 import { addToCart } from "@/lib/actions/cart-actions"
+import { useCart } from "@/lib/use-cart"
 import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
 
@@ -12,12 +13,14 @@ type AddToCartButtonProps = {
 
 export function AddToCartButton({ product }: AddToCartButtonProps) {
     const [isAdding, setIsAdding] = useState(false)
+    const { revalidateCart } = useCart() // Get the revalidateCart function from the useCart hook
 
     const handleAddToCart = async () => {
         setIsAdding(true)
 
         try {
             await addToCart(product.id, 1)
+            revalidateCart() // Revalidate the cart data after adding an item
         } catch (error) {
             console.error("Error adding product to cart:", error)
         } finally {
