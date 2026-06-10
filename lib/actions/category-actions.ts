@@ -3,7 +3,7 @@
 import { Prisma } from "@/generated/prisma/browser"
 import { prisma } from "../prisma"
 
-export async function getCategoryFromSlug(slug: string, select?: Prisma.CategorySelect) {
+export async function getCategoryBySlug(slug: string, select?: Prisma.CategorySelect) {
     return prisma.category.findUnique({
         where: { slug },
         select,
@@ -20,4 +20,8 @@ export async function getCategorySidebarData() {
             name: "asc",
         },
     })
+}
+
+export async function getAllCategories(select?: Prisma.CategorySelect) {
+    return prisma.category.findMany({ select })
 }

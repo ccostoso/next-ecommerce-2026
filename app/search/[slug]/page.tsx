@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton"
 import { notFound } from "next/navigation"
 import ProductListData from "@/components/ProductListData"
-import { getCategoryFromSlug } from "@/lib/actions/category-actions"
+import { getCategoryBySlug } from "@/lib/actions/category-actions"
 
 type CategoryPageProps = {
     params: Promise<{ slug: string }>
@@ -12,7 +12,7 @@ type CategoryPageProps = {
 
 export async function generateMetadata({ params }: CategoryPageProps) {
     const { slug } = await params
-    const category = await getCategoryFromSlug(slug)
+    const category = await getCategoryBySlug(slug)
 
     if (!category) return {}
 
@@ -32,7 +32,7 @@ export default async function CategoryPage({
     const { slug } = await params
     const { sort } = await searchParams
 
-    const category = await getCategoryFromSlug(slug, {
+    const category = await getCategoryBySlug(slug, {
         name: true,
         slug: true,
     })

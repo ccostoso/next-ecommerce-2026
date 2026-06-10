@@ -1,14 +1,17 @@
-import { getProducts, getProductsParams } from "@/lib/actions/product-actions"
+import {
+    getProductListData,
+    getProductListDataParams,
+} from "@/lib/actions/product-actions"
 import ProductList from "./ProductList"
 
 type ProductListDataProps = {
-    params: getProductsParams
+    params: getProductListDataParams
 }
 
 export default async function ProductListData({
     params,
 }: ProductListDataProps) {
-    const products = await getProducts(params)
+    const products = await getProductListData(params)
 
     return <ProductList products={products} />
 }

@@ -16,7 +16,15 @@ export async function getProductBySlug(slug: string) {
     return product
 }
 
-export type getProductsParams = {
+export async function getAllProducts(select?: Prisma.ProductSelect) {
+    return prisma.product.findMany({ select })
+}
+
+export async function getProductCount() {
+    return prisma.product.count()
+}
+
+export type getProductListDataParams = {
     query?: string
     slug?: string
     sort?: string
@@ -24,7 +32,7 @@ export type getProductsParams = {
     pageSize?: number
 }
 
-export async function getProducts({ query, slug, sort, page = 1, pageSize = 3 }: getProductsParams) {
+export async function getProductListData({ query, slug, sort, page = 1, pageSize = 3 }: getProductListDataParams) {
     let orderBy: Prisma.ProductOrderByWithRelationInput | undefined
 
     switch (sort) {
