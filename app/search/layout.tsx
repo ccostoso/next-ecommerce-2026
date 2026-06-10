@@ -1,19 +1,11 @@
 import { Suspense } from "react"
 import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton"
 import CategorySidebar from "@/components/CategorySidebar"
-import { prisma } from "@/lib/prisma-server"
 import SortingControls from "@/components/SortingControls"
+import { getCategorySidebarData } from "@/lib/actions/category-actions"
 
 async function CategorySidebarData() {
-    const categories = await prisma.category.findMany({
-        select: {
-            name: true,
-            slug: true,
-        },
-        orderBy: {
-            name: "asc",
-        },
-    })
+    const categories = await getCategorySidebarData()
 
     return <CategorySidebar categories={categories} />
 }

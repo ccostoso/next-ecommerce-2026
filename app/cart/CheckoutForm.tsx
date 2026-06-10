@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import { handleCheckout } from "@/lib/actions/cart-actions"
 
 export default function CheckoutForm() {
-    // useActionState is a custom hook that manages the state of a server action,
-    // including pending state and any returned data or errors.
     const [state, formAction, isPending] = useActionState(handleCheckout, null)
     const hasSubmittedRef = useRef(false)
 
