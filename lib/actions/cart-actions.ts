@@ -4,6 +4,8 @@ import { cookies } from "next/headers"
 import { prisma } from "./../prisma"
 import { unstable_cache, updateTag } from "next/cache"
 import { CheckoutCart, ProductCart } from "./../types"
+import { redirect } from "next/navigation"
+import { processCheckout } from "../orders"
 
 async function getCartIdFromCookies() {
     return (await cookies()).get("cartId")?.value
@@ -162,4 +164,21 @@ export async function setCartItemQuantity(productId: string, quantity: number) {
         console.error("Error updating cart item quantity:", error)
         throw new Error("Failed to update cart item quantity")
     }
+}
+
+export const handleCheckout = async (_prevState: { error: string } | null) => {
+    "use server"
+    void _prevState
+
+    let sessionUrl: string
+
+    try {
+        const result = await processCheckout()
+        sessionUrl = result.sessionUrl
+    } catch (error) {
+        console.error("Checkout failed:", error)
+        return { error: "Checkout failed. Please try again." }
+    }
+
+    redirect(sessionUrl)
 }

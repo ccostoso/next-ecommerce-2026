@@ -1,28 +1,10 @@
 import CartEntry from "@/components/CartEntry"
 import CartSummary from "@/components/CartSummary"
-import { Button } from "@/components/ui/button"
 import { getCheckoutCart } from "@/lib/actions/cart-actions"
-import { processCheckout } from "@/lib/orders"
-import { ProcessCheckoutResult } from "@/lib/types"
-import { redirect } from "next/navigation"
+import CheckoutForm from "./CheckoutForm"
 
 export default async function CartPage() {
     const cart = await getCheckoutCart()
-
-    const handleCheckout = async () => {
-        "use server"
-
-        let result: ProcessCheckoutResult
-
-        try {
-            result = await processCheckout()
-        } catch (error) {
-            console.error("Checkout failed:", error)
-            throw error
-        }
-
-        redirect(result.sessionUrl)
-    }
 
     return (
         <main className="container mx-auto p-4">
@@ -44,11 +26,7 @@ export default async function CartPage() {
                     </div>
                     <CartSummary />
 
-                    <form action={handleCheckout}>
-                        <Button size="lg" className="mt-4 w-full">
-                            Proceed to checkout
-                        </Button>
-                    </form>
+                    <CheckoutForm />
                 </div>
             )}
         </main>

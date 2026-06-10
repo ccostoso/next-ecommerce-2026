@@ -17,7 +17,10 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-    title: "Next Commerce",
+    title: {
+        default: "Next Commerce",
+        template: "%s | Next Commerce",
+    },
     description:
         "A demo e-commerce application built with Next.js 13 and Tailwind CSS.",
 }
