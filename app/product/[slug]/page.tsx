@@ -10,7 +10,6 @@ import { AddToCartButton } from "@/components/AddToCartButton"
 
 type ProductPageProps = {
     params: Promise<{ slug: string }>
-    searchParams: Promise<{ error?: string | undefined }>
 }
 
 export async function generateMetadata({ params }: ProductPageProps) {
@@ -43,19 +42,11 @@ export async function generateMetadata({ params }: ProductPageProps) {
     }
 }
 
-export default async function ProductPage({
-    params,
-    searchParams,
-}: ProductPageProps) {
+export default async function ProductPage({ params }: ProductPageProps) {
     const { slug } = await params
     const product = await getProductBySlug(slug)
-    const { error } = (await searchParams) || {}
 
     if (!product) notFound()
-
-    if (error === "true") {
-        throw new Error("Random error for testing error handling")
-    }
 
     const jsonLd = {
         "@context": "https://schema.org/",
