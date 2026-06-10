@@ -12,26 +12,67 @@ export async function POST(request: NextRequest) {
     }
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+
     try {
         const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
 
-        if (event.type === "checkout.session.completed") {
-            const session = event.data.object as Stripe.Checkout.Session
-            const orderId = session.metadata?.orderId
+        switch (event.type) {
+            case "checkout.session.expired": {
+                const session = event.data.object
 
-            if (!orderId) {
-                console.warn("No orderId found in session metadata for session ID:", session.id)
-                return new NextResponse("No orderId in session metadata", { status: 400 })
+                const order = await prisma.order.findUnique({
+                    where: { stripeSessionId: session.id },
+                    include: { orderItems: true },
+                })
+
+                // No matching order (e.g. CLI-triggered fixture event) → no-op
+                if (!order) break
+
+                // Idempotency guard: only act if still awaiting payment
+                if (order.status !== "pending_payment") break
+
+                await prisma.$transaction([
+                    prisma.order.update({
+                        where: { id: order.id },
+                        data: { status: "cancelled" },
+                    }),
+                    ...order.orderItems.map((item) =>
+                        prisma.product.update({
+                            where: { id: item.productId },
+                            data: { inventory: { increment: item.quantity } },
+                        })
+                    ),
+                ])
+
+                break
             }
+            case "checkout.session.completed": {
+                const session = event.data.object as Stripe.Checkout.Session
+                const orderId = session.metadata?.orderId
 
-            await prisma.order.update({
-                where: { id: orderId },
-                data: { status: "paid", stripePaymentIntentId: session.payment_intent as string },
-            })
-            console.log("Received checkout.session.completed event for session ID:", session.id)
-        } else {
-            console.warn("Unhandled Stripe event type:", event.type)
+                if (!orderId) {
+                    console.warn("No orderId in session metadata:", session.id)
+                    break // verified event we can't act on → fall through to 200
+                }
+
+                const result = await prisma.order.updateMany({
+                    where: { id: orderId, status: "pending_payment" },
+                    data: {
+                        status: "paid",
+                        stripePaymentIntentId: session.payment_intent as string,
+                    },
+                })
+
+                if (result.count === 0) {
+                    console.warn("No pending order for session — already processed or unknown:", session.id)
+                }
+
+                break
+            }
+            default:
+                console.warn("Unhandled Stripe event type:", event.type)
         }
+
         return new NextResponse(null, { status: 200 })
     } catch (error) {
         console.error("Error processing Stripe webhook:", error)

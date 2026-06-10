@@ -29,6 +29,24 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
         const order = await prisma.$transaction(async (tx) => {
             const total = cart.subtotal
 
+            // Update inventory for each product in the cart. This uses an atomic update to
+            // ensure that the inventory is only decremented if there is enough stock.
+            for (const item of cart.items) {
+                const result = await tx.product.updateMany({
+                    where: {
+                        id: item.product.id,
+                        inventory: { gte: item.quantity }, // guard: enough stock
+                    },
+                    data: {
+                        inventory: { decrement: item.quantity }, // atomic math
+                    },
+                })
+
+                if (result.count === 0) {
+                    throw new Error(`Insufficient stock for ${item.product.name}`)
+                }
+            }
+
             // Create a new order in the database
             const newOrder = await tx.order.create({
                 data: {
@@ -118,6 +136,30 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
                 where: { id: orderId },
                 data: { status: "failed" },
             })
+        }
+
+        // Additionally, if the order was created but the Stripe session creation failed, 
+        // we should attempt to restore inventory for the products in the order.
+        if (orderId) {
+            try {
+                await prisma.$transaction([
+                    prisma.order.update({
+                        where: { id: orderId },
+                        data: { status: "failed" },
+                    }),
+                    ...cart.items.map((item) =>
+                        prisma.product.update({
+                            where: { id: item.product.id },
+                            data: { inventory: { increment: item.quantity } },
+                        })
+                    ),
+                ])
+            } catch (compensationError) {
+                console.error(
+                    `CRITICAL: compensation failed for order ${orderId} — inventory not restored`,
+                    compensationError
+                )
+            }
         }
 
         console.error("Error creating order:", error)

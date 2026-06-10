@@ -45,6 +45,8 @@ export async function createCheckoutSession(order: OrderWithItemsAndProducts) {
                 orderId: order.id.toString(),
                 ...(order.userId && { userId: order.userId.toString() }),
             },
+            expires_at: Math.floor(Date.now() / 1000) // current time, in seconds, not milliseconds
+                + 30 * 60 // that is, 30 * 60 seconds, so 30 minutes from now
         })
 
         return { sessionId: session.id, sessionUrl: session.url }
