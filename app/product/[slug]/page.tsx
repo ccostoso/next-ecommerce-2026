@@ -48,6 +48,24 @@ export default async function ProductPage(props: ProductPageProps) {
 
     if (!product) notFound()
 
+    const jsonLd = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: product.name,
+        image: product.image,
+        description: product.description,
+        sku: product.id,
+        offers: {
+            "@type": "Offer",
+            priceCurrency: "USD",
+            price: formatPrice(product.price),
+            availability:
+                product.inventory > 0
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+        },
+    }
+
     const breadcrumbItems = [
         { label: "Products", href: "/" },
         {
@@ -133,6 +151,11 @@ export default async function ProductPage(props: ProductPageProps) {
                     </div>
                 </CardContent>
             </Card>
+            {/* dangerouslySetInnerHTML will be fine as the content is generated from trusted data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
         </main>
     )
 }
