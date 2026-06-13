@@ -28,21 +28,29 @@ export async function POST(request: NextRequest) {
                 // No matching order (e.g. CLI-triggered fixture event) → no-op
                 if (!order) break
 
-                // Idempotency guard: only act if still awaiting payment
-                if (order.status !== "pending_payment") break
-
-                await prisma.$transaction([
-                    prisma.order.update({
-                        where: { id: order.id },
+                const result = await prisma.$transaction(async (tx) => {
+                    const updated = await tx.order.updateMany({
+                        where: { id: order.id, status: "pending_payment" },
                         data: { status: "cancelled" },
-                    }),
-                    ...order.orderItems.map((item) =>
-                        prisma.product.update({
-                            where: { id: item.productId },
-                            data: { inventory: { increment: item.quantity } },
-                        })
-                    ),
-                ])
+                    })
+                    if (updated.count === 0) return { restored: false }  // someone else already handled it
+
+                    await Promise.all(
+                        order.orderItems.map((item) =>
+                            tx.product.update({
+                                where: { id: item.productId },
+                                data: { inventory: { increment: item.quantity } },
+                            })
+                        )
+                    )
+                    return { restored: true }
+                })
+
+                if (result.restored) {
+                    console.log(`Order ${order.id} cancelled and inventory restored for expired session ${session.id}`)
+                } else {
+                    console.log(`Order ${order.id} already processed (not pending) for expired session ${session.id}`)
+                }
 
                 break
             }
@@ -56,11 +64,11 @@ export async function POST(request: NextRequest) {
                 }
 
                 const result = await prisma.order.updateMany({
-                    where: { id: orderId, status: "pending_payment" },
-                    data: {
-                        status: "paid",
-                        stripePaymentIntentId: session.payment_intent as string,
+                    where: {
+                        id: orderId,
+                        status: { in: ["pending_payment", "payment_processed"] },
                     },
+                    data: { status: "paid", stripePaymentIntentId: session.payment_intent as string },
                 })
 
                 if (result.count === 0) {

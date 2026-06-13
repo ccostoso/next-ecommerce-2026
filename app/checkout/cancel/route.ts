@@ -20,25 +20,40 @@ export async function GET(request: NextRequest) {
             notFound()
         }
 
-        const order = await prisma.order.findFirst({
+        const order = await prisma.order.findUnique({
             where: {
                 id: orderId,
                 stripeSessionId: sessionId,
             },
+            include: { orderItems: true },
         })
 
         if (!order) {
             notFound()
         }
 
-        if (order.status === "pending_payment") {
-            await prisma.order.update({
-                where: { id: order.id },
-                data: {
-                    status: "pending",
-                    stripeSessionId: null,
-                },
+        const result = await prisma.$transaction(async (tx) => {
+            const updated = await tx.order.updateMany({
+                where: { id: order.id, status: "pending_payment" },
+                data: { status: "cancelled" },
             })
+            if (updated.count === 0) return { restored: false }  // someone else already handled it
+
+            await Promise.all(
+                order.orderItems.map((item) =>
+                    tx.product.update({
+                        where: { id: item.productId },
+                        data: { inventory: { increment: item.quantity } },
+                    })
+                )
+            )
+            return { restored: true }
+        })
+
+        if (result.restored) {
+            console.log(`Order ${order.id} cancelled and inventory restored for session ${sessionId}`)
+        } else {
+            console.log(`Order ${order.id} already processed (not pending) for session ${sessionId}`)
         }
     } catch (error) {
         console.error("Error retrieving Stripe session or updating order:", error)

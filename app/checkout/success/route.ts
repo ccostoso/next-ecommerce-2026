@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             notFound()
         }
 
-        const order = await prisma.order.findFirst({
+        const order = await prisma.order.findUnique({
             where: {
                 id: orderId,
                 stripeSessionId: sessionId,
