@@ -138,8 +138,8 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
             })
         }
 
-        // Additionally, if the order was created but the Stripe session creation failed, 
-        // we should attempt to restore inventory for the products in the order.
+        // If the order was created but checkout couldn't be initiated (e.g. Stripe session creation failed),
+        // attempt to restore inventory for the products in the order.
         if (orderId) {
             try {
                 await prisma.$transaction([
