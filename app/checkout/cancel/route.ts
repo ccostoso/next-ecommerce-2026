@@ -28,9 +28,7 @@ export async function GET(request: NextRequest) {
             include: { orderItems: true },
         })
 
-        if (!order) {
-            notFound()
-        }
+        if (!order) notFound()
 
         const result = await prisma.$transaction(async (tx) => {
             const updated = await tx.order.updateMany({
@@ -56,6 +54,9 @@ export async function GET(request: NextRequest) {
             console.log(`Order ${order.id} already processed (not pending) for session ${sessionId}`)
         }
     } catch (error) {
+        if (error instanceof Error && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_")) {
+            throw error // notFound — not a real error
+        }
         console.error("Error retrieving Stripe session or updating order:", error)
         throw error
     }
