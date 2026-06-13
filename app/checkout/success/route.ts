@@ -22,16 +22,14 @@ export async function GET(request: NextRequest) {
             notFound()
         }
 
-        const order = await prisma.order.findFirst({
+        const order = await prisma.order.findUnique({
             where: {
                 id: orderId,
                 stripeSessionId: sessionId,
             },
         })
 
-        if (!order) {
-            notFound()
-        }
+        if (!order) notFound()
 
         if (order.status === "pending_payment") {
             await prisma.order.update({
@@ -42,6 +40,9 @@ export async function GET(request: NextRequest) {
             })
         }
     } catch (error) {
+        if (error instanceof Error && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_")) {
+            throw error // notFound — not a real error
+        }
         console.error("Error retrieving Stripe session or updating order:", error)
         throw error
     }

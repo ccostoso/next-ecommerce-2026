@@ -34,6 +34,12 @@ export default function OrderStatusBadge({ status }: { status: string }) {
                     variant: "outline" as const,
                     icon: <CreditCard className="w-4 h-4" />,
                 }
+            case "cancelled":
+                return {
+                    label: "Cancelled",
+                    variant: "destructive" as const,
+                    icon: <AlertCircle className="w-4 h-4" />,
+                }
             default:
                 return {
                     label: status,

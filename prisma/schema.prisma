@@ -54,8 +54,8 @@ model Order {
     id                    String      @id @default(uuid())
     total                 Float
     status                String      @default("pending")
-    stripeSessionId       String?
-    stripePaymentIntentId String?
+    stripeSessionId       String?     @unique
+    stripePaymentIntentId String?     @unique
     createdAt             DateTime    @default(now())
     updatedAt             DateTime    @updatedAt
     orderItems            OrderItem[]

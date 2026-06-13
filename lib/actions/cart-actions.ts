@@ -11,7 +11,7 @@ async function getCartIdFromCookies() {
     return (await cookies()).get("cartId")?.value
 }
 
-async function fetchProductCart(id: string): Promise<ProductCart | null> {
+async function getProductCart(id: string): Promise<ProductCart | null> {
     return prisma.cart.findUnique({
         where: { id },
         include: {
@@ -33,7 +33,7 @@ async function getCachedProductCartFromCookies(): Promise<ProductCart | null> {
     if (!id) return null
 
     return unstable_cache(
-        async () => fetchProductCart(id),
+        async () => getProductCart(id),
         [`cart-${id}`],
         { tags: [`cart-${id}`] }
     )()
@@ -44,7 +44,7 @@ async function getDBProductCartFromCookies(): Promise<ProductCart | null> {
 
     if (!id) return null
 
-    return fetchProductCart(id)
+    return getProductCart(id)
 }
 
 export async function getOrCreateProductCart(): Promise<ProductCart> {

@@ -12,26 +12,75 @@ export async function POST(request: NextRequest) {
     }
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+
     try {
         const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret)
 
-        if (event.type === "checkout.session.completed") {
-            const session = event.data.object as Stripe.Checkout.Session
-            const orderId = session.metadata?.orderId
+        switch (event.type) {
+            case "checkout.session.expired": {
+                const session = event.data.object
 
-            if (!orderId) {
-                console.warn("No orderId found in session metadata for session ID:", session.id)
-                return new NextResponse("No orderId in session metadata", { status: 400 })
+                const order = await prisma.order.findUnique({
+                    where: { stripeSessionId: session.id },
+                    include: { orderItems: true },
+                })
+
+                // No matching order (e.g. CLI-triggered fixture event) → no-op
+                if (!order) break
+
+                const result = await prisma.$transaction(async (tx) => {
+                    const updated = await tx.order.updateMany({
+                        where: { id: order.id, status: "pending_payment" },
+                        data: { status: "cancelled" },
+                    })
+                    if (updated.count === 0) return { restored: false }  // someone else already handled it
+
+                    await Promise.all(
+                        order.orderItems.map((item) =>
+                            tx.product.update({
+                                where: { id: item.productId },
+                                data: { inventory: { increment: item.quantity } },
+                            })
+                        )
+                    )
+                    return { restored: true }
+                })
+
+                if (result.restored) {
+                    console.log(`Order ${order.id} cancelled and inventory restored for expired session ${session.id}`)
+                } else {
+                    console.log(`Order ${order.id} already processed (not pending) for expired session ${session.id}`)
+                }
+
+                break
             }
+            case "checkout.session.completed": {
+                const session = event.data.object as Stripe.Checkout.Session
+                const orderId = session.metadata?.orderId
 
-            await prisma.order.update({
-                where: { id: orderId },
-                data: { status: "paid", stripePaymentIntentId: session.payment_intent as string },
-            })
-            console.log("Received checkout.session.completed event for session ID:", session.id)
-        } else {
-            console.warn("Unhandled Stripe event type:", event.type)
+                if (!orderId) {
+                    console.warn("No orderId in session metadata:", session.id)
+                    break // verified event we can't act on → fall through to 200
+                }
+
+                const result = await prisma.order.updateMany({
+                    where: {
+                        id: orderId,
+                        status: { in: ["pending_payment", "payment_processed"] },
+                    },
+                    data: { status: "paid", stripePaymentIntentId: session.payment_intent as string },
+                })
+
+                if (result.count === 0) {
+                    console.warn("No pending order for session — already processed or unknown:", session.id)
+                }
+
+                break
+            }
+            default:
+                console.warn("Unhandled Stripe event type:", event.type)
         }
+
         return new NextResponse(null, { status: 200 })
     } catch (error) {
         console.error("Error processing Stripe webhook:", error)

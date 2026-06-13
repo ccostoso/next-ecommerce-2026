@@ -17,6 +17,11 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
     const session = await auth()
     const userId = session?.user?.id
 
+    let hasReservedInventory = false
+    let hasSessionCreated = false
+    let hasSessionPersisted = false
+    let stripeSessionId: string | null = null
+
     if (!cart || cart.items.length === 0) {
         throw new Error("Cart is empty")
     }
@@ -28,6 +33,26 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
         // Use a transaction to ensure that all database operations succeed or fail together
         const order = await prisma.$transaction(async (tx) => {
             const total = cart.subtotal
+
+            // Update inventory for each product in the cart. This uses an atomic update to
+            // ensure that the inventory is only decremented if there is enough stock.
+            for (const item of cart.items) {
+                const result = await tx.product.updateMany({
+                    where: {
+                        id: item.product.id,
+                        inventory: { gte: item.quantity }, // guard: enough stock
+                    },
+                    data: {
+                        inventory: { decrement: item.quantity }, // atomic math
+                    },
+                })
+
+                if (result.count === 0) {
+                    throw new Error(`Insufficient stock for ${item.product.name}`)
+                }
+            }
+
+            hasReservedInventory = true
 
             // Create a new order in the database
             const newOrder = await tx.order.create({
@@ -71,7 +96,7 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
         // Store the order ID for error handling in case of Stripe session creation failure
         orderId = order.id.toString()
 
-        // Reload created order
+        // Reload created order (now including items and product details for Stripe session creation)
         const createdOrder = await prisma.order.findUnique({
             where: { id: order.id },
             include: {
@@ -96,6 +121,9 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
             throw new Error("Failed to create Stripe checkout session")
         }
 
+        hasSessionCreated = true
+        stripeSessionId = sessionId
+
         // Store the session ID in the order and change the order status
         await prisma.order.update({
             where: { id: createdOrder.id },
@@ -103,7 +131,9 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
                 stripeSessionId: sessionId,
                 status: "pending_payment",
             },
-        });
+        })
+
+        hasSessionPersisted = true;
 
         // Clear the cart cookie to prevent stale cart data
         (await cookies()).delete("cartId")
@@ -111,13 +141,41 @@ export async function processCheckout(): Promise<ProcessCheckoutResult> {
         // Return the session URL and the created order for potential future use (e.g., order confirmation page)
         return { sessionUrl, order: createdOrder }
     } catch (error) {
-        // If an error occurs during the order creation or Stripe session creation, 
-        // update the order status to "failed" if we have an order ID
-        if (orderId && error instanceof Error && error.message.includes("Stripe")) {
-            await prisma.order.update({
-                where: { id: orderId },
-                data: { status: "failed" },
-            })
+        if (orderId) {
+            // Create new const to capture orderId for use in the transaction callback to avoid closure issues
+            const failedOrderId = orderId
+
+            try {
+                await prisma.$transaction(async (tx) => {
+                    await tx.order.update({
+                        where: { id: failedOrderId },
+                        data: { status: "failed" },
+                    })
+
+                    // Only restore stock when inventory was reserved and no session was persisted on the order.
+                    if (hasReservedInventory && !hasSessionPersisted) {
+                        await Promise.all(
+                            cart.items.map((item) =>
+                                tx.product.update({
+                                    where: { id: item.product.id },
+                                    data: { inventory: { increment: item.quantity } },
+                                })
+                            )
+                        )
+                    }
+                })
+
+                if (hasSessionCreated && !hasSessionPersisted) {
+                    console.error(
+                        `CRITICAL: order ${failedOrderId} created Stripe session ${stripeSessionId} but failed before persisting session id`
+                    )
+                }
+            } catch (compensationError) {
+                console.error(
+                    `CRITICAL: compensation failed for order ${failedOrderId} — inventory not restored`,
+                    compensationError
+                )
+            }
         }
 
         console.error("Error creating order:", error)
