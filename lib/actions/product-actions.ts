@@ -4,6 +4,8 @@
 import { prisma } from "../prisma"
 import { Prisma } from "@/generated/prisma/client"
 import { toPositiveInt } from "./../utils"
+import { createProductsCacheKey, createProductsTags } from "../cache-keys"
+import { unstable_cache } from "next/cache"
 
 export async function getProductBySlug(slug: string) {
     const product = await prisma.product.findUnique({
@@ -81,4 +83,18 @@ export async function getProductListData({ query, slug, sort, page = 1, pageSize
     })
 
     return products
+}
+
+export async function getCachedProductListData({ query, slug, sort, page = 1, pageSize = 3 }: getProductListDataParams) {
+    const cacheKey = createProductsCacheKey({ categorySlug: slug, query, page, limit: pageSize, sort })
+    const cacheTags = createProductsTags({ categorySlug: slug, query })
+
+    console.log("Cache key for product list:", cacheKey)
+    console.log("Cache tags for product list:", cacheTags)
+
+    return unstable_cache(
+        () => getProductListData({ query, slug, sort, page, pageSize }),
+        [cacheKey],
+        { tags: cacheTags, revalidate: 60 * 60 /* Revalidate every hour */ },
+    )()
 }

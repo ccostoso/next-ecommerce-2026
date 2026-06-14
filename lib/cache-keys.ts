@@ -1,20 +1,16 @@
 type ProductsCacheKey = {
-    params: {
-        categorySlug?: string
-        search?: string
-        page?: number
-        limit?: number
-        sort?: string
-    }
+    categorySlug?: string
+    query?: string
+    page?: number
+    limit?: number
+    sort?: string
 }
 
-export function createProductsCacheKey({ params }: ProductsCacheKey) {
-    const { categorySlug, search, page, limit, sort } = params
-
+export function createProductsCacheKey({ categorySlug, query, page, limit, sort }: ProductsCacheKey) {
     const keyParts = ["products"]
 
     if (categorySlug) keyParts.push(`category=${categorySlug}`)
-    if (search) keyParts.push(`search=${search}`)
+    if (query) keyParts.push(`query=${query}`)
     if (page) keyParts.push(`page=${page}`)
     if (limit) keyParts.push(`limit=${limit}`)
     if (sort) keyParts.push(`sort=${sort}`)
@@ -23,19 +19,15 @@ export function createProductsCacheKey({ params }: ProductsCacheKey) {
 }
 
 type ProductsTagKey = {
-    params: {
-        categorySlug?: string
-        search?: string
-    }
+    categorySlug?: string
+    query?: string
 }
 
-export function createProductsTags({ params }: ProductsTagKey) {
-    const { categorySlug, search } = params
-
+export function createProductsTags({ categorySlug, query }: ProductsTagKey) {
     const tags = ["products"]
 
     if (categorySlug) tags.push(`category=${categorySlug}`)
-    if (search) tags.push(`search=${search}`)
+    if (query) tags.push(`query=${query}`)
 
     return tags
 }

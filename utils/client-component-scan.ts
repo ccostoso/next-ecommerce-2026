@@ -1,7 +1,23 @@
+/**
+ * This utility scans the "app" and "components" directories for files that contain the "use client" directive,
+ * which indicates that they are client components. It builds a tree of the file structure, marking each
+ * file as client or server, and then prints the tree to the console with a summary of how many client
+ * and server files there are. This can help you understand the distribution of client and server components
+ * in your Next.js project and identify any unexpected client components that might be causing dynamic rendering.
+ *
+ * Note: This is a simple heuristic based on the presence of "use client" (either double quotes, single 
+ * quotes or backticks) at the top of the file. It does not account for dynamic imports or other ways that 
+ * a file might become dynamic. However, it should give a good starting point for understanding your 
+ * project's component structure.
+ *
+ * Run from your project root:  node utils/client-component-scan.ts   (Node 22.18+)
+ *                          or: pnpm tsx utils/client-component-scan.ts
+ */
+
 import fs from "fs"
 import path from "path"
 
-const ROOT = path.resolve(".")
+const ROOT = path.join(import.meta.dirname, "..")
 const SCAN_DIRS = ["app", "components"]
 const EXTENSIONS = [".tsx", ".ts", ".jsx", ".js"]
 

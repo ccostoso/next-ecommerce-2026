@@ -11,6 +11,7 @@ import ProductsSkeleton from "../components/skeletons/ProductsSkeleton"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import ProductListData from "@/components/ProductListData"
 import { getProductCount } from "@/lib/actions/product-actions"
+import { cn } from "@/lib/utils"
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 const PAGE_SIZE = 3
@@ -24,6 +25,9 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
     // Calculate total pages based on total products and page size
     const totalPages = Math.ceil(total / PAGE_SIZE)
 
+    const isFirstPage = page === 1
+    const isLastPage = page === totalPages
+
     return (
         <main className="container mx-auto p-4 flex-1">
             <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
@@ -34,7 +38,12 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
             <Pagination className="mt-8">
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious href={`?page=${page - 1}`} />
+                        <PaginationPrevious
+                            href={`?page=${page - 1}`}
+                            className={cn(
+                                isFirstPage && "pointer-events-none opacity-50",
+                            )}
+                        />
                     </PaginationItem>
 
                     {Array.from({ length: totalPages }).map((_, i) => {
@@ -59,7 +68,12 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
                     })}
 
                     <PaginationItem>
-                        <PaginationNext href={`?page=${page + 1}`} />
+                        <PaginationNext
+                            href={`?page=${page + 1}`}
+                            className={cn(
+                                isLastPage && "pointer-events-none opacity-50",
+                            )}
+                        />
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
