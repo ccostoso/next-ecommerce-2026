@@ -13,7 +13,7 @@ async function getCategoryBySlug(slug: string, select?: Prisma.CategorySelect) {
 
 export async function getCachedCategoryBySlug(slug: string, select?: Prisma.CategorySelect) {
     const cacheKey = `category-${slug}`
-    const cacheTags = [`category=${slug}`]
+    const cacheTags = ["categories", `category=${slug}`]
 
     return unstable_cache(
         () => getCategoryBySlug(slug, select),

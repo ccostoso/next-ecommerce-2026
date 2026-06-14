@@ -35,7 +35,7 @@ async function getCachedProductCartFromCookies(): Promise<ProductCart | null> {
     return unstable_cache(
         async () => getProductCart(id),
         [`cart-${id}`],
-        { tags: [`cart-${id}`] }
+        { tags: [`cart-${id}`], revalidate: 60 * 60 /* Revalidate every hour */ },
     )()
 }
 
