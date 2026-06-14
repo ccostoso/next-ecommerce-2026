@@ -4,11 +4,15 @@ import ProductsSkeleton from "../../../components/skeletons/ProductsSkeleton"
 import { notFound } from "next/navigation"
 import ProductListData from "@/components/ProductListData"
 import { getCategoryBySlug } from "@/lib/actions/category-actions"
+import { ProductListPagination } from "@/components/ProductListPagination"
+import { getProductListCount } from "@/lib/actions/product-actions"
 
 type CategoryPageProps = {
     params: Promise<{ slug: string }>
-    searchParams: Promise<{ sort?: string }>
+    searchParams: Promise<{ sort?: string; page?: string }>
 }
+
+const PAGE_SIZE = 3
 
 export async function generateMetadata({ params }: CategoryPageProps) {
     const { slug } = await params
@@ -30,7 +34,8 @@ export default async function CategoryPage({
     searchParams,
 }: CategoryPageProps) {
     const { slug } = await params
-    const { sort } = await searchParams
+    const { sort, page } = await searchParams
+    const currentPage = Number(page) || 1
 
     const category = await getCategoryBySlug(slug, {
         name: true,
@@ -38,6 +43,9 @@ export default async function CategoryPage({
     })
 
     if (!category) notFound()
+
+    const total = await getProductListCount({ slug })
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
     const breadcrumbItems = [
         { label: "Products", href: "/" },
@@ -51,9 +59,25 @@ export default async function CategoryPage({
         <>
             <Breadcrumbs items={breadcrumbItems} />
 
-            <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
-                <ProductListData params={{ slug, sort }} />
+            <Suspense
+                // key={`${slug}-${sort}`}
+                fallback={<ProductsSkeleton />}
+            >
+                <ProductListData
+                    params={{
+                        slug,
+                        sort,
+                        page: currentPage,
+                        pageSize: PAGE_SIZE,
+                    }}
+                />
             </Suspense>
+            <ProductListPagination
+                page={currentPage}
+                totalPages={totalPages}
+                basePath={`/search/${slug}`}
+                query={{ sort: sort || undefined }}
+            />
         </>
     )
 }

@@ -34,20 +34,7 @@ export type getProductListDataParams = {
     pageSize?: number
 }
 
-export async function getProductListData({ query, slug, sort, page = 1, pageSize = 3 }: getProductListDataParams) {
-    let orderBy: Prisma.ProductOrderByWithRelationInput | undefined
-
-    switch (sort) {
-        case "price_asc":
-            orderBy = { price: "asc" }
-            break
-        case "price_desc":
-            orderBy = { price: "desc" }
-            break
-        default:
-            orderBy = undefined
-    }
-
+function buildProductListWhere({ query, slug }: Pick<getProductListDataParams, "query" | "slug">): Prisma.ProductWhereInput {
     const where: Prisma.ProductWhereInput = {}
 
     if (query) {
@@ -62,6 +49,25 @@ export async function getProductListData({ query, slug, sort, page = 1, pageSize
             slug,
         }
     }
+
+    return where
+}
+
+export async function getProductListData({ query, slug, sort, page = 1, pageSize = 3 }: getProductListDataParams) {
+    let orderBy: Prisma.ProductOrderByWithRelationInput | undefined
+
+    switch (sort) {
+        case "price_asc":
+            orderBy = { price: "asc" }
+            break
+        case "price_desc":
+            orderBy = { price: "desc" }
+            break
+        default:
+            orderBy = undefined
+    }
+
+    const where = buildProductListWhere({ query, slug })
 
     // Ensure that `page` and `pageSize` are positive integers, otherwise use default values.
     const safePage = toPositiveInt(page, 1)
@@ -83,6 +89,11 @@ export async function getProductListData({ query, slug, sort, page = 1, pageSize
     })
 
     return products
+}
+
+export async function getProductListCount({ query, slug }: Pick<getProductListDataParams, "query" | "slug">) {
+    const where = buildProductListWhere({ query, slug })
+    return prisma.product.count({ where })
 }
 
 export async function getCachedProductListData({ query, slug, sort, page = 1, pageSize = 3 }: getProductListDataParams) {

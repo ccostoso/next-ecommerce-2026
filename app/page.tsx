@@ -12,6 +12,7 @@ import Breadcrumbs from "@/components/Breadcrumbs"
 import ProductListData from "@/components/ProductListData"
 import { getProductCount } from "@/lib/actions/product-actions"
 import { cn } from "@/lib/utils"
+import { ProductListPagination } from "@/components/ProductListPagination"
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 const PAGE_SIZE = 3
@@ -35,48 +36,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
                 <ProductListData params={{ page, pageSize: PAGE_SIZE }} />
             </Suspense>
 
-            <Pagination className="mt-8">
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious
-                            href={`?page=${page - 1}`}
-                            className={cn(
-                                isFirstPage && "pointer-events-none opacity-50",
-                            )}
-                        />
-                    </PaginationItem>
-
-                    {Array.from({ length: totalPages }).map((_, i) => {
-                        const pageNum = i + 1
-                        if (
-                            pageNum === 1 ||
-                            pageNum === totalPages ||
-                            (pageNum >= page - 1 && pageNum <= page + 1)
-                        ) {
-                            return (
-                                <PaginationItem key={pageNum}>
-                                    <PaginationLink
-                                        href={`?page=${pageNum}`}
-                                        isActive={page === pageNum}
-                                    >
-                                        {pageNum}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )
-                        }
-                        return null
-                    })}
-
-                    <PaginationItem>
-                        <PaginationNext
-                            href={`?page=${page + 1}`}
-                            className={cn(
-                                isLastPage && "pointer-events-none opacity-50",
-                            )}
-                        />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+            <ProductListPagination page={page} totalPages={totalPages} />
         </main>
     )
 }
