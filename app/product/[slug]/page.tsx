@@ -45,7 +45,9 @@ export async function generateMetadata({ params }: ProductPageProps) {
     }
 }
 
-export const revalidate = 15
+// Without revalidate set, this page will be statically generated at build time and won't update until
+// the next build.
+export const revalidate = 3600 // Revalidate every hour
 
 export async function generateStaticParams() {
     const products = await getCachedAllProducts({ slug: true })
@@ -57,8 +59,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     const product = await getCachedProductBySlug(slug)
 
     if (!product) notFound()
-
-    console.log(`Fetching product ${slug}`) // Debugging log to check product data
 
     const jsonLd = {
         "@context": "https://schema.org/",
