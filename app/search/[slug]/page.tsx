@@ -7,9 +7,14 @@ import { getCategoryBySlug } from "@/lib/actions/category-actions"
 import { ProductListPagination } from "@/components/ProductListPagination"
 import { getProductListCount } from "@/lib/actions/product-actions"
 
+type CategorySearchParams = {
+    sort?: string
+    page?: string
+}
+
 type CategoryPageProps = {
     params: Promise<{ slug: string }>
-    searchParams: Promise<{ sort?: string; page?: string }>
+    searchParams: Promise<CategorySearchParams>
 }
 
 const PAGE_SIZE = 3
@@ -59,10 +64,7 @@ export default async function CategoryPage({
         <>
             <Breadcrumbs items={breadcrumbItems} />
 
-            <Suspense
-                // key={`${slug}-${sort}`}
-                fallback={<ProductsSkeleton />}
-            >
+            <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
                 <ProductListData
                     params={{
                         slug,

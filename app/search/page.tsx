@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     return (
         <>
             <Breadcrumbs items={breadcrumbItems} />
-            <Suspense fallback={<ProductsSkeleton />}>
+            <Suspense key={`${q}-${sort}`} fallback={<ProductsSkeleton />}>
                 <ProductListData
                     params={{
                         query: q || "",
