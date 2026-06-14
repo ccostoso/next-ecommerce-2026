@@ -1,5 +1,5 @@
 import {
-    getProductListData,
+    getCachedProductListData,
     getProductListDataParams,
 } from "@/lib/actions/product-actions"
 import ProductList from "./ProductList"
@@ -11,7 +11,7 @@ type ProductListDataProps = {
 export default async function ProductListData({
     params,
 }: ProductListDataProps) {
-    const products = await getProductListData(params)
+    const products = await getCachedProductListData(params)
 
     return <ProductList products={products} />
 }
