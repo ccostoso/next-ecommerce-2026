@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import ProductsSkeleton from "../../components/skeletons/ProductsSkeleton"
 import ProductListData from "@/components/ProductListData"
 import { ProductListPagination } from "@/components/ProductListPagination"
-import { getProductListCount } from "@/lib/actions/product-actions"
+import { getCachedProductCount } from "@/lib/actions/product-actions"
 
 type SearchPageProps = {
     searchParams: Promise<{
@@ -19,7 +19,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     const { q, sort, page } = await searchParams
     const currentPage = Number(page) || 1
 
-    const total = await getProductListCount({ query: q || undefined })
+    const total = await getCachedProductCount({ query: q || undefined })
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
     const breadcrumbItems = [

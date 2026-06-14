@@ -1,5 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { getAllProducts, getProductBySlug } from "@/lib/actions/product-actions"
+import {
+    getCachedAllProducts,
+    getCachedProductBySlug,
+} from "@/lib/actions/product-actions"
 import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { notFound } from "next/navigation"
@@ -14,7 +17,7 @@ type ProductPageProps = {
 
 export async function generateMetadata({ params }: ProductPageProps) {
     const { slug } = await params
-    const product = await getProductBySlug(slug)
+    const product = await getCachedProductBySlug(slug)
 
     if (!product) {
         return {
@@ -45,13 +48,13 @@ export async function generateMetadata({ params }: ProductPageProps) {
 export const revalidate = 15
 
 export async function generateStaticParams() {
-    const products = await getAllProducts({ slug: true })
+    const products = await getCachedAllProducts({ slug: true })
     return products.map((product) => ({ slug: product.slug }))
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
     const { slug } = await params
-    const product = await getProductBySlug(slug)
+    const product = await getCachedProductBySlug(slug)
 
     if (!product) notFound()
 

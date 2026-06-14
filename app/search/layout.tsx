@@ -2,10 +2,10 @@ import { Suspense } from "react"
 import CategorySidebarSkeleton from "../../components/skeletons/CategorySidebarSkeleton"
 import CategorySidebar from "@/components/CategorySidebar"
 import SortingControls from "@/components/SortingControls"
-import { getCategorySidebarData } from "@/lib/actions/category-actions"
+import { getCachedCategorySidebarData } from "@/lib/actions/category-actions"
 
 async function CategorySidebarData() {
-    const categories = await getCategorySidebarData()
+    const categories = await getCachedCategorySidebarData()
 
     return <CategorySidebar categories={categories} />
 }
