@@ -29,7 +29,7 @@ export async function getCachedProductBySlug(slug: string) {
     )()
 }
 
-async function getAllProducts(select?: Prisma.ProductSelect) {
+export async function getAllProducts(select?: Prisma.ProductSelect) {
     return prisma.product.findMany({ select })
 }
 
