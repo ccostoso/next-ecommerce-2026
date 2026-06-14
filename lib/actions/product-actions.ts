@@ -34,6 +34,9 @@ export type getProductListDataParams = {
     pageSize?: number
 }
 
+// Pick<T, K> is a TypeScript utility type that constructs a new type by picking a set of properties 
+// K from type T. In this case, we are defining a function that takes an object with only the "query" 
+// and "slug" properties from getProductListDataParams.
 function buildProductListWhere({ query, slug }: Pick<getProductListDataParams, "query" | "slug">): Prisma.ProductWhereInput {
     const where: Prisma.ProductWhereInput = {}
 
@@ -107,5 +110,13 @@ export async function getCachedProductListData({ query, slug, sort, page = 1, pa
         () => getProductListData({ query, slug, sort, page, pageSize }),
         [cacheKey],
         { tags: cacheTags, revalidate: 60 * 60 /* Revalidate every hour */ },
+    )()
+}
+
+export async function getCachedProductCount() {
+    return unstable_cache(
+        () => getProductCount(),
+        ["products-count"],
+        { tags: ["products"], revalidate: 60 * 60 /* Revalidate every hour */ },
     )()
 }

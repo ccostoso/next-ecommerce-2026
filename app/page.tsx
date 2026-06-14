@@ -1,17 +1,8 @@
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { Suspense } from "react"
 import ProductsSkeleton from "../components/skeletons/ProductsSkeleton"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import ProductListData from "@/components/ProductListData"
-import { getProductCount } from "@/lib/actions/product-actions"
-import { cn } from "@/lib/utils"
+import { getCachedProductCount } from "@/lib/actions/product-actions"
 import { ProductListPagination } from "@/components/ProductListPagination"
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
@@ -21,13 +12,10 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
     const searchParams = await props.searchParams
 
     const page = Number(searchParams.page) || 1
-    const total = await getProductCount()
+    const total = await getCachedProductCount()
 
     // Calculate total pages based on total products and page size
     const totalPages = Math.ceil(total / PAGE_SIZE)
-
-    const isFirstPage = page === 1
-    const isLastPage = page === totalPages
 
     return (
         <main className="container mx-auto p-4 flex-1">
